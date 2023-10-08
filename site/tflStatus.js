@@ -81,6 +81,7 @@ const scheduleNextFetch = (maxAge) => {
 };
 
 // Function to clear and render new statuses
+// we allow passing a render function for testing
 const clearAndRender = (statuses, renderFunction = renderStatusBlocks) => {
   // Clear previous statuses
   document.body.innerHTML = '';
@@ -111,7 +112,7 @@ const fetchTfLStatus = async (modes, showNames) => {
 };
 
 // Function to render status blocks
-let renderStatusBlocks = (statuses) => {
+const renderStatusBlocks = (statuses) => {
   document.documentElement.style.setProperty('--total-blocks', statuses.length);
   statuses.forEach(status => {
     const block = document.createElement('div');
@@ -131,8 +132,7 @@ const fetchAndRenderStatus = async () => {
   await fetchTfLStatus(modes, showNames);
 };
 
-// Initially fetch and render the status
-fetchAndRenderStatus();
+
 
 // Cache Time To Live in seconds (for example, 300 seconds or 5 minutes)
 const cache_ttl = 300;
@@ -146,21 +146,23 @@ setTimeout(() => {
 }, cache_ttl * 1000);
 
 const printUsageInstructions = () => {
-    // Print usage instructions
-    console.log('Super simple TfL status');
-    console.log('from https://github.com/mnbf9rca/super_simple_tfl_status')
-    console.log('Usage Instructions:');
-    console.log('1. mode: The mode of transportation. Default is "tube,elizabeth-line".');
-    console.log('   Example: ?mode=tube');
-    console.log('2. names: Whether to show names of the lines. Default is false.');
-    console.log('   Example: ?names=true');
-    console.log('3. of course, you can combine them.');
-    console.log('   Example: ?names=true&mode=tube,elizabeth-line');
+  // Print usage instructions
+  console.log('Super simple TfL status');
+  console.log('from https://github.com/mnbf9rca/super_simple_tfl_status')
+  console.log('Usage Instructions:');
+  console.log('1. mode: The mode of transportation. Default is "tube,elizabeth-line". Recommended list of modes: tube,elizabeth-line,dlr,overground.');
+  console.log('   You can put any value here - it will be passed to TfL API which may return an error (check console).');  
+  console.log('   Example: ?mode=tube');
+  console.log('2. names: Whether to show names of the lines. Default is false.');
+  console.log('   Example: ?names=true');
+  console.log('3. of course, you can combine them.');
+  console.log('   Example: ?names=true&mode=tube,elizabeth-line');
 };
 
 // Call the function
 printUsageInstructions();
-
+// Initially fetch and render the status
+fetchAndRenderStatus();
 
 // Export the functions for testing
 if (typeof module !== 'undefined') {
