@@ -1,3 +1,10 @@
+// tflStatus.js
+// A simple script to display TfL status on a web page
+// (c) 2023, github.com/mnbf9rca
+// Available at: https://github.com/mnbf9rca/super_simple_tfl_status
+// License: MIT
+// version 0.1.0
+
 // Define line colors
 // https://content.tfl.gov.uk/tfl-colour-standard-issue-08.pdf
 const lineColors = {
