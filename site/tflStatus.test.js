@@ -11,12 +11,12 @@
 
 
 // load test TfL data responses
- // no disruption
+// no disruption
 const allOkResponse = require('../test_common_tfl_results/tfl_responses_all_ok.json');
 // only waterloo and city line is disrupted
 const singleDisruptionResponse = require('../test_common_tfl_results/tfl_responses_single_disruption.json');
 // Central, Metropolitan, Piccadilly, Waterloo & City lines are disrupted
-const multipleDisruptionsResponse = require('../test_common_tfl_results/tfl_responses_multiple_disruptions.json'); 
+const multipleDisruptionsResponse = require('../test_common_tfl_results/tfl_responses_multiple_disruptions.json');
 
 
 describe('extractMaxAge', () => {
@@ -165,7 +165,7 @@ describe('renderStatusBlocks', () => {
     expect(blocks.length).toBe(1);
     expect(blocks[0].textContent).toBe('Good service on all lines');
     expect(blocks[0].style.backgroundColor).toBe('rgb(0, 74, 156)');
-    
+
     // Validate --total-blocks CSS property
     expect(window.getComputedStyle(document.documentElement).getPropertyValue('--total-blocks')).toBe("1");
   });
@@ -275,7 +275,7 @@ describe('scheduleNextFetch', () => {
   it('should schedule a new fetch if maxAge is a number', () => {
     const maxAge = 300; // 300 seconds
     scheduleNextFetch(maxAge);
-    
+
     expect(global.setTimeout).toHaveBeenCalled();
     expect(global.setTimeout).toHaveBeenCalledWith(expect.any(Function), maxAge * 1000);
   });
@@ -405,10 +405,10 @@ describe('fetchTfLStatus', () => {
   test('should return status data with no disruption and showNames=false', async () => {
     const modes = 'tube';
     const showNames = false;
-  
+
     fetch.mockImplementation(() => createResponse(allOkResponse));
     const result = await fetchTfLStatus(modes, showNames);
-  
+
     expect(fetch).toHaveBeenCalledWith(`https://api.tfl.gov.uk/Line/Mode/${modes}/Status`);
     expect(result).toEqual([
       {
@@ -417,14 +417,14 @@ describe('fetchTfLStatus', () => {
       },
     ]);
   });
-  
+
   test('should return status data with a single disruption and showNames=false', async () => {
     const modes = 'tube';
     const showNames = false;
-  
+
     fetch.mockImplementation(() => createResponse(singleDisruptionResponse));
     const result = await fetchTfLStatus(modes, showNames);
-  
+
     expect(fetch).toHaveBeenCalledWith(`https://api.tfl.gov.uk/Line/Mode/${modes}/Status`);
     expect(result).toEqual([
       {
@@ -433,14 +433,14 @@ describe('fetchTfLStatus', () => {
       }
     ]);
   });
-  
+
   test('should return status data with multiple disruptions and showNames=false', async () => {
     const modes = 'tube';
     const showNames = false;
-  
+
     fetch.mockImplementation(() => createResponse(multipleDisruptionsResponse));
     const result = await fetchTfLStatus(modes, showNames);
-  
+
     expect(fetch).toHaveBeenCalledWith(`https://api.tfl.gov.uk/Line/Mode/${modes}/Status`);
     expect(result).toEqual([
       {
@@ -461,6 +461,6 @@ describe('fetchTfLStatus', () => {
       }
     ]);
   });
-  
+
 
 });
