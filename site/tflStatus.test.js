@@ -10,16 +10,13 @@
 // version 0.1.0
 
 
-const axios = require('axios')
-jest.mock('axios', () => ({
-  get: jest.fn(() => Promise.resolve({ data: {} })),
-}));
-
-
 // load test TfL data responses
-const allOkResponse = require('../test_common_tfl_results/tfl_responses_all_ok.json'); // no disruption
-const singleDisruptionResponse = require('../test_common_tfl_results/tfl_responses_single_disruption.json'); // only waterloo and city line is disrupted
-const multipleDisruptionsResponse = require('../test_common_tfl_results/tfl_responses_multiple_disruptions.json'); // Central, Metropolitan, Piccadilly, Waterloo & City lines are disrupted
+ // no disruption
+const allOkResponse = require('../test_common_tfl_results/tfl_responses_all_ok.json');
+// only waterloo and city line is disrupted
+const singleDisruptionResponse = require('../test_common_tfl_results/tfl_responses_single_disruption.json');
+// Central, Metropolitan, Piccadilly, Waterloo & City lines are disrupted
+const multipleDisruptionsResponse = require('../test_common_tfl_results/tfl_responses_multiple_disruptions.json'); 
 
 
 describe('extractMaxAge', () => {

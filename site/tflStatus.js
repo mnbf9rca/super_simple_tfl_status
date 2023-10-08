@@ -18,7 +18,11 @@ const lineColors = {
   'Northern': '#000000',
   'Piccadilly': '#000F9F',
   'Victoria': '#00A0DF',
-  'Waterloo & City': '#6BCDB2'
+  'Waterloo & City': '#6BCDB2',
+  'Transport for London': '#000F9F',
+  'DLR': '#00AFAA',
+  'Elizabeth line': '#773DBD',
+  'London Overground': '#EE7623',
 };
 
 // Function to extract max-age from Cache-Control header
@@ -140,6 +144,23 @@ setTimeout(() => {
   // Fetch and render new statuses
   fetchAndRenderStatus();
 }, cache_ttl * 1000);
+
+const printUsageInstructions = () => {
+    // Print usage instructions
+    console.log('Super simple TfL status');
+    console.log('from https://github.com/mnbf9rca/super_simple_tfl_status')
+    console.log('Usage Instructions:');
+    console.log('1. mode: The mode of transportation. Default is "tube,elizabeth-line".');
+    console.log('   Example: ?mode=tube');
+    console.log('2. names: Whether to show names of the lines. Default is false.');
+    console.log('   Example: ?names=true');
+    console.log('3. of course, you can combine them.');
+    console.log('   Example: ?names=true&mode=tube,elizabeth-line');
+};
+
+// Call the function
+printUsageInstructions();
+
 
 // Export the functions for testing
 if (typeof module !== 'undefined') {
