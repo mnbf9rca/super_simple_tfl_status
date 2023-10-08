@@ -131,8 +131,7 @@ const fetchAndRenderStatus = async () => {
   await fetchTfLStatus(modes, showNames);
 };
 
-// Initially fetch and render the status
-fetchAndRenderStatus();
+
 
 // Cache Time To Live in seconds (for example, 300 seconds or 5 minutes)
 const cache_ttl = 300;
@@ -160,7 +159,8 @@ const printUsageInstructions = () => {
 
 // Call the function
 printUsageInstructions();
-
+// Initially fetch and render the status
+fetchAndRenderStatus();
 
 // Export the functions for testing
 if (typeof module !== 'undefined') {
@@ -173,5 +173,7 @@ if (typeof module !== 'undefined') {
     clearAndRender,
     fetchTfLStatus,
     renderStatusBlocks,
+    setTimeout,
+    printUsageInstructions
   };
 }
