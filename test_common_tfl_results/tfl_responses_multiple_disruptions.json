@@ -1,0 +1,433 @@
+[
+  {
+    "$type": "Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
+    "id": "bakerloo",
+    "name": "Bakerloo",
+    "modeName": "tube",
+    "disruptions": [],
+    "created": "2023-09-27T11:38:19.433Z",
+    "modified": "2023-09-27T11:38:19.433Z",
+    "lineStatuses": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineStatus, Tfl.Api.Presentation.Entities",
+        "id": 0,
+        "statusSeverity": 10,
+        "statusSeverityDescription": "Good Service",
+        "created": "0001-01-01T00:00:00",
+        "validityPeriods": []
+      }
+    ],
+    "routeSections": [],
+    "serviceTypes": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineServiceTypeInfo, Tfl.Api.Presentation.Entities",
+        "name": "Regular",
+        "uri": "/Line/Route?ids=Bakerloo&serviceTypes=Regular"
+      }
+    ],
+    "crowding": {
+      "$type": "Tfl.Api.Presentation.Entities.Crowding, Tfl.Api.Presentation.Entities"
+    }
+  },
+  {
+    "$type": "Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
+    "id": "central",
+    "name": "Central",
+    "modeName": "tube",
+    "disruptions": [],
+    "created": "2023-09-27T11:38:19.42Z",
+    "modified": "2023-09-27T11:38:19.42Z",
+    "lineStatuses": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineStatus, Tfl.Api.Presentation.Entities",
+        "id": 0,
+        "lineId": "central",
+        "statusSeverity": 9,
+        "statusSeverityDescription": "Minor Delays",
+        "reason": "Central Line: Minor delays between North Acton and West Ruislip / Ealing Broadway and between Leytonstone and Epping / Hainault via Newbury Park due to train cancellations. GOOD SERVICE on the rest of the line. ",
+        "created": "0001-01-01T00:00:00",
+        "validityPeriods": [
+          {
+            "$type": "Tfl.Api.Presentation.Entities.ValidityPeriod, Tfl.Api.Presentation.Entities",
+            "fromDate": "2023-10-07T14:10:52Z",
+            "toDate": "2023-10-08T00:29:00Z",
+            "isNow": true
+          }
+        ],
+        "disruption": {
+          "$type": "Tfl.Api.Presentation.Entities.Disruption, Tfl.Api.Presentation.Entities",
+          "category": "RealTime",
+          "categoryDescription": "RealTime",
+          "description": "Central Line: Minor delays between North Acton and West Ruislip / Ealing Broadway and between Leytonstone and Epping / Hainault via Newbury Park due to train cancellations. GOOD SERVICE on the rest of the line. ",
+          "affectedRoutes": [],
+          "affectedStops": [],
+          "closureText": "minorDelays"
+        }
+      }
+    ],
+    "routeSections": [],
+    "serviceTypes": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineServiceTypeInfo, Tfl.Api.Presentation.Entities",
+        "name": "Regular",
+        "uri": "/Line/Route?ids=Central&serviceTypes=Regular"
+      },
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineServiceTypeInfo, Tfl.Api.Presentation.Entities",
+        "name": "Night",
+        "uri": "/Line/Route?ids=Central&serviceTypes=Night"
+      }
+    ],
+    "crowding": {
+      "$type": "Tfl.Api.Presentation.Entities.Crowding, Tfl.Api.Presentation.Entities"
+    }
+  },
+  {
+    "$type": "Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
+    "id": "circle",
+    "name": "Circle",
+    "modeName": "tube",
+    "disruptions": [],
+    "created": "2023-09-27T11:38:19.433Z",
+    "modified": "2023-09-27T11:38:19.433Z",
+    "lineStatuses": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineStatus, Tfl.Api.Presentation.Entities",
+        "id": 0,
+        "statusSeverity": 10,
+        "statusSeverityDescription": "Good Service",
+        "created": "0001-01-01T00:00:00",
+        "validityPeriods": []
+      }
+    ],
+    "routeSections": [],
+    "serviceTypes": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineServiceTypeInfo, Tfl.Api.Presentation.Entities",
+        "name": "Regular",
+        "uri": "/Line/Route?ids=Circle&serviceTypes=Regular"
+      }
+    ],
+    "crowding": {
+      "$type": "Tfl.Api.Presentation.Entities.Crowding, Tfl.Api.Presentation.Entities"
+    }
+  },
+  {
+    "$type": "Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
+    "id": "district",
+    "name": "District",
+    "modeName": "tube",
+    "disruptions": [],
+    "created": "2023-09-27T11:38:19.42Z",
+    "modified": "2023-09-27T11:38:19.42Z",
+    "lineStatuses": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineStatus, Tfl.Api.Presentation.Entities",
+        "id": 0,
+        "statusSeverity": 10,
+        "statusSeverityDescription": "Good Service",
+        "created": "0001-01-01T00:00:00",
+        "validityPeriods": []
+      }
+    ],
+    "routeSections": [],
+    "serviceTypes": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineServiceTypeInfo, Tfl.Api.Presentation.Entities",
+        "name": "Regular",
+        "uri": "/Line/Route?ids=District&serviceTypes=Regular"
+      }
+    ],
+    "crowding": {
+      "$type": "Tfl.Api.Presentation.Entities.Crowding, Tfl.Api.Presentation.Entities"
+    }
+  },
+  {
+    "$type": "Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
+    "id": "hammersmith-city",
+    "name": "Hammersmith & City",
+    "modeName": "tube",
+    "disruptions": [],
+    "created": "2023-09-27T11:38:19.433Z",
+    "modified": "2023-09-27T11:38:19.433Z",
+    "lineStatuses": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineStatus, Tfl.Api.Presentation.Entities",
+        "id": 0,
+        "statusSeverity": 10,
+        "statusSeverityDescription": "Good Service",
+        "created": "0001-01-01T00:00:00",
+        "validityPeriods": []
+      }
+    ],
+    "routeSections": [],
+    "serviceTypes": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineServiceTypeInfo, Tfl.Api.Presentation.Entities",
+        "name": "Regular",
+        "uri": "/Line/Route?ids=Hammersmith & City&serviceTypes=Regular"
+      }
+    ],
+    "crowding": {
+      "$type": "Tfl.Api.Presentation.Entities.Crowding, Tfl.Api.Presentation.Entities"
+    }
+  },
+  {
+    "$type": "Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
+    "id": "jubilee",
+    "name": "Jubilee",
+    "modeName": "tube",
+    "disruptions": [],
+    "created": "2023-09-27T11:38:19.42Z",
+    "modified": "2023-09-27T11:38:19.42Z",
+    "lineStatuses": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineStatus, Tfl.Api.Presentation.Entities",
+        "id": 0,
+        "statusSeverity": 10,
+        "statusSeverityDescription": "Good Service",
+        "created": "0001-01-01T00:00:00",
+        "validityPeriods": []
+      }
+    ],
+    "routeSections": [],
+    "serviceTypes": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineServiceTypeInfo, Tfl.Api.Presentation.Entities",
+        "name": "Regular",
+        "uri": "/Line/Route?ids=Jubilee&serviceTypes=Regular"
+      },
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineServiceTypeInfo, Tfl.Api.Presentation.Entities",
+        "name": "Night",
+        "uri": "/Line/Route?ids=Jubilee&serviceTypes=Night"
+      }
+    ],
+    "crowding": {
+      "$type": "Tfl.Api.Presentation.Entities.Crowding, Tfl.Api.Presentation.Entities"
+    }
+  },
+  {
+    "$type": "Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
+    "id": "metropolitan",
+    "name": "Metropolitan",
+    "modeName": "tube",
+    "disruptions": [],
+    "created": "2023-09-27T11:38:19.433Z",
+    "modified": "2023-09-27T11:38:19.433Z",
+    "lineStatuses": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineStatus, Tfl.Api.Presentation.Entities",
+        "id": 0,
+        "lineId": "metropolitan",
+        "statusSeverity": 5,
+        "statusSeverityDescription": "Part Closure",
+        "reason": "METROPOLITAN LINE: Saturday 7 and Sunday 8 October, no service between Wembley Park and Amersham / Chesham / Uxbridge / Watford. Chiltern Railways services will not run between Marylebone and Amersham. Replacement buses operate, but will not serve Preston Road, Northwick Park or stations between Harrow-on-the-Hill and Uxbridge. Please use local London Buses services.",
+        "created": "0001-01-01T00:00:00",
+        "validityPeriods": [
+          {
+            "$type": "Tfl.Api.Presentation.Entities.ValidityPeriod, Tfl.Api.Presentation.Entities",
+            "fromDate": "2023-10-07T03:30:00Z",
+            "toDate": "2023-10-09T00:29:00Z",
+            "isNow": false
+          }
+        ],
+        "disruption": {
+          "$type": "Tfl.Api.Presentation.Entities.Disruption, Tfl.Api.Presentation.Entities",
+          "category": "PlannedWork",
+          "categoryDescription": "PlannedWork",
+          "description": "METROPOLITAN LINE: Saturday 7 and Sunday 8 October, no service between Wembley Park and Amersham / Chesham / Uxbridge / Watford. Chiltern Railways services will not run between Marylebone and Amersham. Replacement buses operate, but will not serve Preston Road, Northwick Park or stations between Harrow-on-the-Hill and Uxbridge. Please use local London Buses services.",
+          "additionalInfo": "Replacement buses operate:Service ML2: Wembley Park - Harrow-on-the-Hill - North Harrow - Pinner - Northwood Hills - Northwood - Rickmansworth - Croxley - Watford; Service ML5: Northwood - Moor Park; Service ML6: Rickmansworth - Chorleywood - Chalfont & Latimer - Amersham - Chesham.",
+          "created": "2023-09-08T13:31:00Z",
+          "affectedRoutes": [],
+          "affectedStops": [],
+          "closureText": "partClosure"
+        }
+      }
+    ],
+    "routeSections": [],
+    "serviceTypes": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineServiceTypeInfo, Tfl.Api.Presentation.Entities",
+        "name": "Regular",
+        "uri": "/Line/Route?ids=Metropolitan&serviceTypes=Regular"
+      }
+    ],
+    "crowding": {
+      "$type": "Tfl.Api.Presentation.Entities.Crowding, Tfl.Api.Presentation.Entities"
+    }
+  },
+  {
+    "$type": "Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
+    "id": "northern",
+    "name": "Northern",
+    "modeName": "tube",
+    "disruptions": [],
+    "created": "2023-09-27T11:38:19.42Z",
+    "modified": "2023-09-27T11:38:19.42Z",
+    "lineStatuses": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineStatus, Tfl.Api.Presentation.Entities",
+        "id": 0,
+        "statusSeverity": 10,
+        "statusSeverityDescription": "Good Service",
+        "created": "0001-01-01T00:00:00",
+        "validityPeriods": []
+      }
+    ],
+    "routeSections": [],
+    "serviceTypes": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineServiceTypeInfo, Tfl.Api.Presentation.Entities",
+        "name": "Regular",
+        "uri": "/Line/Route?ids=Northern&serviceTypes=Regular"
+      },
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineServiceTypeInfo, Tfl.Api.Presentation.Entities",
+        "name": "Night",
+        "uri": "/Line/Route?ids=Northern&serviceTypes=Night"
+      }
+    ],
+    "crowding": {
+      "$type": "Tfl.Api.Presentation.Entities.Crowding, Tfl.Api.Presentation.Entities"
+    }
+  },
+  {
+    "$type": "Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
+    "id": "piccadilly",
+    "name": "Piccadilly",
+    "modeName": "tube",
+    "disruptions": [],
+    "created": "2023-09-27T11:38:19.42Z",
+    "modified": "2023-09-27T11:38:19.42Z",
+    "lineStatuses": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineStatus, Tfl.Api.Presentation.Entities",
+        "id": 0,
+        "lineId": "piccadilly",
+        "statusSeverity": 5,
+        "statusSeverityDescription": "Part Closure",
+        "reason": "PICCADILLY LINE: Saturday 7 and Sunday 8 October, no service between South Harrow and Uxbridge. Replacement buses will not operate, please use local London Buses services.",
+        "created": "0001-01-01T00:00:00",
+        "validityPeriods": [
+          {
+            "$type": "Tfl.Api.Presentation.Entities.ValidityPeriod, Tfl.Api.Presentation.Entities",
+            "fromDate": "2023-10-07T03:30:00Z",
+            "toDate": "2023-10-09T00:29:00Z",
+            "isNow": false
+          }
+        ],
+        "disruption": {
+          "$type": "Tfl.Api.Presentation.Entities.Disruption, Tfl.Api.Presentation.Entities",
+          "category": "PlannedWork",
+          "categoryDescription": "PlannedWork",
+          "description": "PICCADILLY LINE: Saturday 7 and Sunday 8 October, no service between South Harrow and Uxbridge. Replacement buses will not operate, please use local London Buses services.",
+          "created": "2023-09-08T13:40:00Z",
+          "affectedRoutes": [],
+          "affectedStops": [],
+          "closureText": "partClosure"
+        }
+      }
+    ],
+    "routeSections": [],
+    "serviceTypes": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineServiceTypeInfo, Tfl.Api.Presentation.Entities",
+        "name": "Regular",
+        "uri": "/Line/Route?ids=Piccadilly&serviceTypes=Regular"
+      },
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineServiceTypeInfo, Tfl.Api.Presentation.Entities",
+        "name": "Night",
+        "uri": "/Line/Route?ids=Piccadilly&serviceTypes=Night"
+      }
+    ],
+    "crowding": {
+      "$type": "Tfl.Api.Presentation.Entities.Crowding, Tfl.Api.Presentation.Entities"
+    }
+  },
+  {
+    "$type": "Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
+    "id": "victoria",
+    "name": "Victoria",
+    "modeName": "tube",
+    "disruptions": [],
+    "created": "2023-09-27T11:38:19.42Z",
+    "modified": "2023-09-27T11:38:19.42Z",
+    "lineStatuses": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineStatus, Tfl.Api.Presentation.Entities",
+        "id": 0,
+        "statusSeverity": 10,
+        "statusSeverityDescription": "Good Service",
+        "created": "0001-01-01T00:00:00",
+        "validityPeriods": []
+      }
+    ],
+    "routeSections": [],
+    "serviceTypes": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineServiceTypeInfo, Tfl.Api.Presentation.Entities",
+        "name": "Regular",
+        "uri": "/Line/Route?ids=Victoria&serviceTypes=Regular"
+      },
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineServiceTypeInfo, Tfl.Api.Presentation.Entities",
+        "name": "Night",
+        "uri": "/Line/Route?ids=Victoria&serviceTypes=Night"
+      }
+    ],
+    "crowding": {
+      "$type": "Tfl.Api.Presentation.Entities.Crowding, Tfl.Api.Presentation.Entities"
+    }
+  },
+  {
+    "$type": "Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
+    "id": "waterloo-city",
+    "name": "Waterloo & City",
+    "modeName": "tube",
+    "disruptions": [],
+    "created": "2023-09-27T11:38:19.42Z",
+    "modified": "2023-09-27T11:38:19.42Z",
+    "lineStatuses": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineStatus, Tfl.Api.Presentation.Entities",
+        "id": 0,
+        "lineId": "waterloo-city",
+        "statusSeverity": 4,
+        "statusSeverityDescription": "Planned Closure",
+        "reason": "Waterloo & City line: Service operates Monday to Friday between 06:00 and 00:30 only. There is no service on Saturdays, Sundays and on public/bank holidays.",
+        "created": "0001-01-01T00:00:00",
+        "validityPeriods": [
+          {
+            "$type": "Tfl.Api.Presentation.Entities.ValidityPeriod, Tfl.Api.Presentation.Entities",
+            "fromDate": "2023-10-06T23:30:00Z",
+            "toDate": "2023-10-07T22:59:00Z",
+            "isNow": false
+          }
+        ],
+        "disruption": {
+          "$type": "Tfl.Api.Presentation.Entities.Disruption, Tfl.Api.Presentation.Entities",
+          "category": "PlannedWork",
+          "categoryDescription": "PlannedWork",
+          "description": "Waterloo & City line: Service operates Monday to Friday between 06:00 and 00:30 only. There is no service on Saturdays, Sundays and on public/bank holidays.",
+          "created": "2023-01-16T05:24:00Z",
+          "affectedRoutes": [],
+          "affectedStops": [],
+          "closureText": "plannedClosure"
+        }
+      }
+    ],
+    "routeSections": [],
+    "serviceTypes": [
+      {
+        "$type": "Tfl.Api.Presentation.Entities.LineServiceTypeInfo, Tfl.Api.Presentation.Entities",
+        "name": "Regular",
+        "uri": "/Line/Route?ids=Waterloo & City&serviceTypes=Regular"
+      }
+    ],
+    "crowding": {
+      "$type": "Tfl.Api.Presentation.Entities.Crowding, Tfl.Api.Presentation.Entities"
+    }
+  }
+]
