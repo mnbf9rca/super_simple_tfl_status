@@ -23,7 +23,7 @@ const multipleDisruptionsResponse = require('../test_common_tfl_results/tfl_resp
 
 
 describe('extractMaxAge', () => {
-  const { extractMaxAge } = require('./tflstatus');
+  const { extractMaxAge } = require('./tflStatus');
 
   test('should return null when Cache-Control header is missing', () => {
     expect(extractMaxAge(null)).toBeNull();
@@ -51,7 +51,7 @@ describe('extractMaxAge', () => {
 });
 
 describe('getModesFromURL', () => {
-  const getModesFromURL = require('./tflstatus').getModesFromURL;
+  const getModesFromURL = require('./tflStatus').getModesFromURL;
 
   test('should return modes from the URL when "mode" parameter is present', () => {
     const urlParams = new URLSearchParams('mode=tube,dlr');
@@ -114,7 +114,7 @@ describe('getModesFromURL', () => {
 });
 
 describe('shouldShowNames', () => {
-  const shouldShowNames = require('./tflstatus').shouldShowNames;
+  const shouldShowNames = require('./tflStatus').shouldShowNames;
 
   test('should return true when "names" parameter is "true"', () => {
     const urlParams = new URLSearchParams('names=true');
@@ -149,7 +149,7 @@ describe('shouldShowNames', () => {
 
 describe('renderStatusBlocks', () => {
 
-  const renderStatusBlocks = require('./tflstatus').renderStatusBlocks;
+  const renderStatusBlocks = require('./tflStatus').renderStatusBlocks;
 
   // Reset the document body before each test
   beforeEach(() => {
@@ -204,7 +204,7 @@ describe('renderStatusBlocks', () => {
 
 
 describe('extractLineStatuses', () => {
-  const extractLineStatuses = require('./tflstatus').extractLineStatuses;
+  const extractLineStatuses = require('./tflStatus').extractLineStatuses;
 
   describe('when all lines are OK', () => {
     it('should return empty array for disruptedLines and allOtherLinesGood=true, with showNames=true', () => {
@@ -260,7 +260,7 @@ describe('extractLineStatuses', () => {
 });
 
 describe('scheduleNextFetch', () => {
-  let scheduleNextFetch = require('./tflstatus').scheduleNextFetch;
+  let scheduleNextFetch = require('./tflStatus').scheduleNextFetch;
 
   beforeEach(() => {
     jest.spyOn(global, 'setTimeout');
@@ -290,8 +290,8 @@ describe('clearAndRender', () => {
 
   beforeEach(() => {
     jest.resetModules();
-    const tflstatus = require('./tflstatus');
-    clearAndRender = tflstatus.clearAndRender;
+    const tflStatus = require('./tflStatus');
+    clearAndRender = tflStatus.clearAndRender;
 
     document.body.innerHTML = '<div class="status-block"></div>';
 
@@ -315,8 +315,8 @@ describe('clearAndRender', () => {
 });
 
 describe('fetchTfLStatus', () => {
-  const fetchTfLStatus = require('./tflstatus').fetchTfLStatus;
-  const lineColors = require('./tflstatus').lineColors;
+  const fetchTfLStatus = require('./tflStatus').fetchTfLStatus;
+  const lineColors = require('./tflStatus').lineColors;
 
 
   beforeEach(() => {

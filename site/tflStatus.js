@@ -26,7 +26,7 @@ const extractMaxAge = (cacheControlHeader) => {
   if (!cacheControlHeader) return null;
 
   const maxAgeMatch = cacheControlHeader.match(/max-age\s*=\s*([\d.]+)/);
-  
+
   if (maxAgeMatch && maxAgeMatch[1]) {
     const value = maxAgeMatch[1];
     if (!Number.isInteger(parseFloat(value))) {
@@ -95,7 +95,7 @@ const fetchTfLStatus = async (modes, showNames) => {
     const statuses = allOtherLinesGood
       ? [{ message: 'Good service on all lines', bgColor: '#004A9C' }]
       : disruptedLines.concat(showNames ? [{ message: 'Good service on all other lines', bgColor: '#004A9C' }] : []);
-    
+
     clearAndRender(statuses);
     scheduleNextFetch(maxAge);
 
@@ -110,11 +110,11 @@ const fetchTfLStatus = async (modes, showNames) => {
 let renderStatusBlocks = (statuses) => {
   document.documentElement.style.setProperty('--total-blocks', statuses.length);
   statuses.forEach(status => {
-      const block = document.createElement('div');
-      block.className = 'status-block';
-      block.style.backgroundColor = status.bgColor;
-      block.textContent = status.message;
-      document.body.appendChild(block);
+    const block = document.createElement('div');
+    block.className = 'status-block';
+    block.style.backgroundColor = status.bgColor;
+    block.textContent = status.message;
+    document.body.appendChild(block);
   });
 };
 
@@ -123,7 +123,7 @@ const fetchAndRenderStatus = async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const modes = getModesFromURL(urlParams);
   const showNames = shouldShowNames(urlParams);
-  
+
   await fetchTfLStatus(modes, showNames);
 };
 
@@ -142,13 +142,15 @@ setTimeout(() => {
 }, cache_ttl * 1000);
 
 // Export the functions for testing
-module.exports = {
-  extractMaxAge,
-  getModesFromURL,
-  shouldShowNames,
-  extractLineStatuses,
-  scheduleNextFetch,
-  clearAndRender,
-  fetchTfLStatus,
-  renderStatusBlocks,
-};
+if (typeof module !== 'undefined') {
+  module.exports = {
+    extractMaxAge,
+    getModesFromURL,
+    shouldShowNames,
+    extractLineStatuses,
+    scheduleNextFetch,
+    clearAndRender,
+    fetchTfLStatus,
+    renderStatusBlocks,
+  };
+}
