@@ -1,0 +1,13 @@
+{
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:18",
+	"features": {
+		"ghcr.io/devcontainers/features/aws-cli:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"Orta.vscode-jest"
+			]
+		}
+	}
+}

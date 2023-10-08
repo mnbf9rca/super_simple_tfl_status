@@ -1,0 +1,22 @@
+{
+  "name": "super_simple_tfl_status",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --config jest.config.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1472.0",
+    "axios": "^1.5.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-date-mock": "^1.0.8",
+    "jest-environment-jsdom": "^29.7.0",
+    "jsdom": "^22.1.0"
+  }
+}
