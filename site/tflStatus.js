@@ -175,5 +175,7 @@ if (typeof module !== 'undefined') {
     clearAndRender,
     fetchTfLStatus,
     renderStatusBlocks,
+    setTimeout,
+    printUsageInstructions
   };
 }

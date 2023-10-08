@@ -279,6 +279,39 @@ describe('scheduleNextFetch', () => {
     expect(global.setTimeout).toHaveBeenCalled();
     expect(global.setTimeout).toHaveBeenCalledWith(expect.any(Function), maxAge * 1000);
   });
+
+
+});
+
+describe('setTimeout tests with fake timers', () => {
+
+  beforeAll(() => {
+    jest.useFakeTimers();
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
+  it('should execute callback after 1 second', () => {
+    const callback = jest.fn();
+    setTimeout(callback, 1000);
+    expect(callback).not.toBeCalled();
+    jest.runAllTimers();
+    expect(callback).toBeCalled();
+    expect(callback).toHaveBeenCalledTimes(1);
+  });
+
+  it('should execute callback after 300 seconds based on cache_ttl', () => {
+    const callback = jest.fn();
+    const cache_ttl = 300;
+    setTimeout(callback, cache_ttl * 1000);
+    expect(callback).not.toBeCalled();
+    jest.runAllTimers();
+    expect(callback).toBeCalled();
+    expect(callback).toHaveBeenCalledTimes(1);
+  });
+
 });
 
 describe('clearAndRender', () => {
@@ -309,6 +342,22 @@ describe('clearAndRender', () => {
     clearAndRender(mockStatuses, mockRenderFunction);
     expect(mockRenderFunction).toHaveBeenCalledWith(mockStatuses);
   });
+
+  it('should clear and render the statuses correctly', () => {
+    document.body.innerHTML = '<div class="old-status"></div>';
+    const statuses = [{ message: 'New Status', bgColor: '#004A9C' }];
+
+    clearAndRender(statuses);
+
+    const oldStatuses = document.querySelectorAll('.old-status');
+    const newStatuses = document.querySelectorAll('.status-block');
+
+    expect(oldStatuses.length).toBe(0);
+    expect(newStatuses.length).toBe(1);
+    expect(newStatuses[0].textContent).toBe('New Status');
+    expect(newStatuses[0].style.backgroundColor).toBe('rgb(0, 74, 156)');
+  });
+
 });
 
 describe('fetchTfLStatus', () => {
@@ -464,3 +513,36 @@ describe('fetchTfLStatus', () => {
 
 
 });
+
+
+describe('printUsageInstructions', () => {
+  const { printUsageInstructions } = require('./tflStatus');
+
+  let consoleLogMock;
+
+  beforeAll(() => {
+    // Mock console.log
+    consoleLogMock = jest.spyOn(console, 'log').mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    // Restore console.log to its original function
+    consoleLogMock.mockRestore();
+  });
+
+  it('should print correct usage instructions', () => {
+    printUsageInstructions();
+
+    expect(consoleLogMock).toBeCalledTimes(9);
+    expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Super simple TfL status');
+    expect(consoleLogMock).toHaveBeenNthCalledWith(2, 'from https://github.com/mnbf9rca/super_simple_tfl_status');
+    expect(consoleLogMock).toHaveBeenNthCalledWith(3, 'Usage Instructions:');
+    expect(consoleLogMock).toHaveBeenNthCalledWith(4, '1. mode: The mode of transportation. Default is "tube,elizabeth-line".');
+    expect(consoleLogMock).toHaveBeenNthCalledWith(5, '   Example: ?mode=tube');
+    expect(consoleLogMock).toHaveBeenNthCalledWith(6, '2. names: Whether to show names of the lines. Default is false.');
+    expect(consoleLogMock).toHaveBeenNthCalledWith(7, '   Example: ?names=true');
+    expect(consoleLogMock).toHaveBeenNthCalledWith(8, '3. of course, you can combine them.');
+    expect(consoleLogMock).toHaveBeenNthCalledWith(9, '   Example: ?names=true&mode=tube,elizabeth-line');
+  });
+});
+
