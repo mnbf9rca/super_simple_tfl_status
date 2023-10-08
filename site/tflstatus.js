@@ -43,39 +43,56 @@ const shouldShowNames = (urlParams) => {
   return urlParams.get('names') === 'true';
 };
 
+// Function to extract line statuses
+const extractLineStatuses = (data, showNames) => {
+  let allOtherLinesGood = true;
+  const disruptedLines = [];
+
+  data.forEach(line => {
+    const hasDisruption = line.lineStatuses.some(status => status.statusSeverity < 10);
+    if (hasDisruption) {
+      allOtherLinesGood = false;
+      disruptedLines.push({
+        message: showNames ? line.name : '',
+        bgColor: lineColors[line.name] || '#000',
+      });
+    }
+  });
+
+  return { allOtherLinesGood, disruptedLines };
+};
+
+// Function to schedule next fetch
+const scheduleNextFetch = (maxAge) => {
+  if (maxAge !== null) {
+    setTimeout(() => fetchAndRenderStatus(), maxAge * 1000);
+  }
+};
+
+// Function to clear and render new statuses
+const clearAndRender = (statuses, renderFunction = renderStatusBlocks) => {
+  // Clear previous statuses
+  document.body.innerHTML = '';
+  // Render new statuses
+  renderFunction(statuses);
+};
+
 // Function to fetch TfL status
 const fetchTfLStatus = async (modes, showNames) => {
   try {
     const response = await fetch(`https://api.tfl.gov.uk/Line/Mode/${modes}/Status`);
+    const maxAge = extractMaxAge(response.headers.get('Cache-Control'));
     const data = await response.json();
-    let allOtherLinesGood = true;
-    const disruptedLines = [];
-    
-    data.forEach(line => {
-      const hasDisruption = line.lineStatuses.some(status => status.statusSeverity < 10);
-      if (hasDisruption) {
-        allOtherLinesGood = false;
-        disruptedLines.push({
-          message: showNames ? line.name : '',
-          bgColor: lineColors[line.name] || '#000',
-        });
-      }
-    });
 
-    if (allOtherLinesGood) {
-      return [{
-        message: 'Good service on all lines',
-        bgColor: '#004A9C',
-      }];
-    } else {
-      if (showNames) {
-        disruptedLines.push({
-          message: 'Good service on all other lines',
-          bgColor: '#004A9C',
-        });
-      } 
-      return disruptedLines;
-    }
+    const { allOtherLinesGood, disruptedLines } = extractLineStatuses(data, showNames);
+    const statuses = allOtherLinesGood
+      ? [{ message: 'Good service on all lines', bgColor: '#004A9C' }]
+      : disruptedLines.concat(showNames ? [{ message: 'Good service on all other lines', bgColor: '#004A9C' }] : []);
+    
+    clearAndRender(statuses);
+    scheduleNextFetch(maxAge);
+
+    return statuses;
   } catch (err) {
     console.error('Failed to fetch TfL status:', err);
     return [];
@@ -83,7 +100,7 @@ const fetchTfLStatus = async (modes, showNames) => {
 };
 
 // Function to render status blocks
-const renderStatusBlocks = (statuses) => {
+let renderStatusBlocks = (statuses) => {
   document.documentElement.style.setProperty('--total-blocks', statuses.length);
   statuses.forEach(status => {
       const block = document.createElement('div');
@@ -94,14 +111,13 @@ const renderStatusBlocks = (statuses) => {
   });
 };
 
-// Fetch status on page load and render it
+// Function to fetch and render status
 const fetchAndRenderStatus = async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const modes = getModesFromURL(urlParams);
   const showNames = shouldShowNames(urlParams);
-
-  const statuses = await fetchTfLStatus(modes, showNames);
-  renderStatusBlocks(statuses);
+  
+  await fetchTfLStatus(modes, showNames);
 };
 
 // Initially fetch and render the status
@@ -123,6 +139,9 @@ module.exports = {
   extractMaxAge,
   getModesFromURL,
   shouldShowNames,
+  extractLineStatuses,
+  scheduleNextFetch,
+  clearAndRender,
   fetchTfLStatus,
   renderStatusBlocks,
 };

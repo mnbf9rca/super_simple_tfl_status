@@ -9,6 +9,12 @@ jest.mock('axios', () => ({
 }));
 
 
+// load test TfL data responses
+const allOkResponse = require('../test_common_tfl_results/tfl_responses_all_ok.json'); // no disruption
+const singleDisruptionResponse = require('../test_common_tfl_results/tfl_responses_single_disruption.json'); // only waterloo and city line is disrupted
+const multipleDisruptionsResponse = require('../test_common_tfl_results/tfl_responses_multiple_disruptions.json'); // Central, Metropolitan, Piccadilly, Waterloo & City lines are disrupted
+
+
 describe('extractMaxAge', () => {
   const { extractMaxAge } = require('./tflstatus');
 
@@ -100,8 +106,6 @@ describe('getModesFromURL', () => {
   });
 });
 
-// Import the function you want to test
-
 describe('shouldShowNames', () => {
   const shouldShowNames = require('./tflstatus').shouldShowNames;
 
@@ -192,15 +196,120 @@ describe('renderStatusBlocks', () => {
 });
 
 
+describe('extractLineStatuses', () => {
+  const extractLineStatuses = require('./tflstatus').extractLineStatuses;
 
+  describe('when all lines are OK', () => {
+    it('should return empty array for disruptedLines and allOtherLinesGood=true, with showNames=true', () => {
+      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(allOkResponse, true);
+      expect(allOtherLinesGood).toBe(true);
+      expect(disruptedLines).toEqual([]);
+    });
+
+    it('should return empty array for disruptedLines and allOtherLinesGood=true, with showNames=false', () => {
+      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(allOkResponse, false);
+      expect(allOtherLinesGood).toBe(true);
+      expect(disruptedLines).toEqual([]);
+    });
+  });
+
+  describe('when a single line is disrupted', () => {
+    it('should identify the disrupted line, with showNames=true', () => {
+      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(singleDisruptionResponse, true);
+      expect(allOtherLinesGood).toBe(false);
+      expect(disruptedLines).toEqual([{ message: 'Waterloo & City', bgColor: '#6BCDB2' }]);
+    });
+
+    it('should identify the disrupted line, with showNames=false', () => {
+      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(singleDisruptionResponse, false);
+      expect(allOtherLinesGood).toBe(false);
+      expect(disruptedLines).toEqual([{ message: '', bgColor: '#6BCDB2' }]);
+    });
+  });
+
+  describe('when multiple lines are disrupted', () => {
+    it('should identify all disrupted lines, with showNames=true', () => {
+      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(multipleDisruptionsResponse, true);
+      expect(allOtherLinesGood).toBe(false);
+      expect(disruptedLines).toEqual([
+        { message: 'Central', bgColor: '#E1251B' },
+        { message: 'Metropolitan', bgColor: '#870F54' },
+        { message: 'Piccadilly', bgColor: '#000F9F' },
+        { message: 'Waterloo & City', bgColor: '#6BCDB2' },
+      ]);
+    });
+
+    it('should identify all disrupted lines, with showNames=false', () => {
+      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(multipleDisruptionsResponse, false);
+      expect(allOtherLinesGood).toBe(false);
+      expect(disruptedLines).toEqual([
+        { message: '', bgColor: '#E1251B' },
+        { message: '', bgColor: '#870F54' },
+        { message: '', bgColor: '#000F9F' },
+        { message: '', bgColor: '#6BCDB2' },
+      ]);
+    });
+  });
+});
+
+describe('scheduleNextFetch', () => {
+  let scheduleNextFetch = require('./tflstatus').scheduleNextFetch;
+
+  beforeEach(() => {
+    jest.spyOn(global, 'setTimeout');
+  });
+
+  afterEach(() => {
+    global.setTimeout.mockRestore();
+  });
+
+  it('should not schedule a new fetch if maxAge is null', () => {
+    scheduleNextFetch(null);
+    expect(global.setTimeout).not.toHaveBeenCalled();
+  });
+
+  it('should schedule a new fetch if maxAge is a number', () => {
+    const maxAge = 300; // 300 seconds
+    scheduleNextFetch(maxAge);
+    
+    expect(global.setTimeout).toHaveBeenCalled();
+    expect(global.setTimeout).toHaveBeenCalledWith(expect.any(Function), maxAge * 1000);
+  });
+});
+
+describe('clearAndRender', () => {
+  let clearAndRender;
+  const mockRenderFunction = jest.fn();
+
+  beforeEach(() => {
+    jest.resetModules();
+    const tflstatus = require('./tflstatus');
+    clearAndRender = tflstatus.clearAndRender;
+
+    document.body.innerHTML = '<div class="status-block"></div>';
+
+    mockRenderFunction.mockClear();
+  });
+
+  afterAll(() => {
+    jest.resetModules();
+  });
+
+  it('should clear previous statuses', () => {
+    clearAndRender([]);
+    expect(document.body.innerHTML).toBe('');
+  });
+
+  it('should call renderFunction with given statuses', () => {
+    const mockStatuses = [{ message: 'test', bgColor: '#fff' }];
+    clearAndRender(mockStatuses, mockRenderFunction);
+    expect(mockRenderFunction).toHaveBeenCalledWith(mockStatuses);
+  });
+});
 
 describe('fetchTfLStatus', () => {
   const fetchTfLStatus = require('./tflstatus').fetchTfLStatus;
   const lineColors = require('./tflstatus').lineColors;
-
-  const allOkResponse = require('../test_common_tfl_results/tfl_responses_all_ok.json');
-  const singleDisruptionResponse = require('../test_common_tfl_results/tfl_responses_single_disruption.json');
-  const multipleDisruptionsResponse = require('../test_common_tfl_results/tfl_responses_multiple_disruptions.json');
 
 
   beforeEach(() => {
