@@ -9,6 +9,33 @@ jest.mock('axios', () => ({
 }));
 
 
+describe('extractMaxAge', () => {
+  const { extractMaxAge } = require('./tflstatus');
+
+  test('should return null when Cache-Control header is missing', () => {
+    expect(extractMaxAge(null)).toBeNull();
+    expect(extractMaxAge('')).toBeNull();
+  });
+
+  test('should return null when max-age is missing in Cache-Control header', () => {
+    expect(extractMaxAge('public, must-revalidate')).toBeNull();
+  });
+
+  test('should return the correct max-age when present in Cache-Control header', () => {
+    expect(extractMaxAge('public, must-revalidate, max-age=30')).toBe(30);
+    expect(extractMaxAge('max-age=60, public')).toBe(60);
+  });
+
+  test('should handle spaces around equals sign in max-age directive', () => {
+    expect(extractMaxAge('public, must-revalidate, max-age = 30')).toBe(30);
+    expect(extractMaxAge('max-age = 60 , public')).toBe(60);
+  });
+
+  test('should handle non-integer max-age gracefully', () => {
+    expect(extractMaxAge('public, max-age=30.5')).toBeNull();
+    expect(extractMaxAge('public, max-age=abc')).toBeNull();
+  });
+});
 
 describe('getModesFromURL', () => {
   const getModesFromURL = require('./tflstatus').getModesFromURL;

@@ -14,6 +14,24 @@ const lineColors = {
   'Waterloo & City': '#6BCDB2'
 };
 
+// Function to extract max-age from Cache-Control header
+const extractMaxAge = (cacheControlHeader) => {
+  if (!cacheControlHeader) return null;
+
+  const maxAgeMatch = cacheControlHeader.match(/max-age\s*=\s*([\d.]+)/);
+  
+  if (maxAgeMatch && maxAgeMatch[1]) {
+    const value = maxAgeMatch[1];
+    if (!Number.isInteger(parseFloat(value))) {
+      return null;
+    }
+    return parseInt(value, 10);
+  }
+
+  return null;
+};
+
+
 // Function to get modes from URL
 const getModesFromURL = (urlParams) => {
   const mode = urlParams.get('mode');
@@ -102,6 +120,7 @@ setTimeout(() => {
 
 // Export the functions for testing
 module.exports = {
+  extractMaxAge,
   getModesFromURL,
   shouldShowNames,
   fetchTfLStatus,
