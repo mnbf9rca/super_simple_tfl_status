@@ -55,11 +55,9 @@ Understand how the `names` parameter changes the display when there are disrupti
 
 | Scenario                 | `names=true`                      | `names=false`                     |
 |--------------------------|-----------------------------------|----------------------------------|
-| **No Disruptions**       | Shows "Good service on all lines" with line names. | Shows "Good service on all lines" without line names. |
+| **No Disruptions**       | Shows "Good service on all lines". | Shows "Good service on all lines". |
 | **Some Disruptions**     | Shows disrupted lines with their names, followed by "Good service on all other lines."| Shows only the colors of disrupted lines.  |
 | **All Lines Disrupted**  | Shows all lines with disruptions and their names. | Shows only the colors of all disrupted lines. |
-
-This table should help clarify how the `names` parameter affects the visual representation of TfL line statuses.
 
 ## Contributing
 
