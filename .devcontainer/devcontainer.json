@@ -1,5 +1,5 @@
 {
-	"image": "mcr.microsoft.com/devcontainers/javascript-node:18",
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:18@sha256:3d34fcea66d6713a8df3b9ed28ae2dcf56ac42da0fe2bca44bb4ee83ce2c6472",
 	"customizations": {
 		"vscode": {
 			"extensions": [
