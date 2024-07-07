@@ -221,13 +221,13 @@ describe('extractLineStatuses', () => {
     it('should identify the disrupted line, with showNames=true', () => {
       const { allOtherLinesGood, disruptedLines } = extractLineStatuses(singleDisruptionResponse, true);
       expect(allOtherLinesGood).toBe(false);
-      expect(disruptedLines).toEqual([{ message: 'Waterloo & City', bgColor: '#6BCDB2' }]);
+      expect(disruptedLines).toEqual([{ message: 'Waterloo & City', bgColor: '#6BCDB2', solid: true }]);
     });
 
     it('should identify the disrupted line, with showNames=false', () => {
       const { allOtherLinesGood, disruptedLines } = extractLineStatuses(singleDisruptionResponse, false);
       expect(allOtherLinesGood).toBe(false);
-      expect(disruptedLines).toEqual([{ message: '', bgColor: '#6BCDB2' }]);
+      expect(disruptedLines).toEqual([{ message: '', bgColor: '#6BCDB2', solid: true }]);
     });
   });
 
@@ -236,10 +236,10 @@ describe('extractLineStatuses', () => {
       const { allOtherLinesGood, disruptedLines } = extractLineStatuses(multipleDisruptionsResponse, true);
       expect(allOtherLinesGood).toBe(false);
       expect(disruptedLines).toEqual([
-        { message: 'Central', bgColor: '#E1251B' },
-        { message: 'Metropolitan', bgColor: '#870F54' },
-        { message: 'Piccadilly', bgColor: '#000F9F' },
-        { message: 'Waterloo & City', bgColor: '#6BCDB2' },
+        { message: 'Central', bgColor: '#E1251B', solid: true },
+        { message: 'Metropolitan', bgColor: '#870F54', solid: true },
+        { message: 'Piccadilly', bgColor: '#000F9F', solid: true },
+        { message: 'Waterloo & City', bgColor: '#6BCDB2', solid: true },
       ]);
     });
 
@@ -247,10 +247,10 @@ describe('extractLineStatuses', () => {
       const { allOtherLinesGood, disruptedLines } = extractLineStatuses(multipleDisruptionsResponse, false);
       expect(allOtherLinesGood).toBe(false);
       expect(disruptedLines).toEqual([
-        { message: '', bgColor: '#E1251B' },
-        { message: '', bgColor: '#870F54' },
-        { message: '', bgColor: '#000F9F' },
-        { message: '', bgColor: '#6BCDB2' },
+        { message: '', bgColor: '#E1251B', solid: true },
+        { message: '', bgColor: '#870F54', solid: true },
+        { message: '', bgColor: '#000F9F', solid: true },
+        { message: '', bgColor: '#6BCDB2', solid: true },
       ]);
     });
   });
@@ -412,6 +412,7 @@ describe('fetchTfLStatus', () => {
       {
         message: 'Waterloo & City',
         bgColor: '#6BCDB2',
+        solid: true
       },
       {
         bgColor: "#004A9C",
@@ -432,18 +433,22 @@ describe('fetchTfLStatus', () => {
       {
         message: 'Central',
         bgColor: '#E1251B',
+        solid: true
       },
       {
         message: 'Metropolitan',
         bgColor: '#870F54',
+        solid: true
       },
       {
         message: 'Piccadilly',
         bgColor: '#000F9F',
+        solid: true
       },
       {
         message: 'Waterloo & City',
         bgColor: '#6BCDB2',
+        solid: true
       },
       {
         bgColor: "#004A9C",
@@ -479,6 +484,7 @@ describe('fetchTfLStatus', () => {
       {
         message: '',
         bgColor: '#6BCDB2',
+        solid: true
       }
     ]);
   });
@@ -495,18 +501,22 @@ describe('fetchTfLStatus', () => {
       {
         message: '',
         bgColor: '#E1251B',
+        solid: true
       },
       {
         message: '',
         bgColor: '#870F54',
+        solid: true
       },
       {
         message: '',
         bgColor: '#000F9F',
+        solid: true
       },
       {
         message: '',
         bgColor: '#6BCDB2',
+        solid: true
       }
     ]);
   });
