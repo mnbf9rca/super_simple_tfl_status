@@ -23,6 +23,12 @@ const lineColors = {
   'DLR': '#00AFAA',
   'Elizabeth line': '#773DBD',
   'London Overground': '#EE7623',
+  'Liberty': '#61686B',
+  'Lioness': '#FFA600',
+  'Mildmay': '#006FE6',
+  'Suffragette': '#18A95D',
+  'Weaver': '#9B0058',
+  'Windrush': '#DC241F'
 };
 
 // Function to extract max-age from Cache-Control header
@@ -151,7 +157,7 @@ const printUsageInstructions = () => {
   console.log('from https://github.com/mnbf9rca/super_simple_tfl_status')
   console.log('Usage Instructions:');
   console.log('1. mode: The mode of transportation. Default is "tube,elizabeth-line". Recommended list of modes: tube,elizabeth-line,dlr,overground.');
-  console.log('   You can put any value here - it will be passed to TfL API which may return an error (check console).');  
+  console.log('   You can put any value here - it will be passed to TfL API which may return an error (check console).');
   console.log('   Example: ?mode=tube');
   console.log('2. names: Whether to show names of the lines. Default is false.');
   console.log('   Example: ?names=true');
