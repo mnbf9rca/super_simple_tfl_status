@@ -73,6 +73,7 @@ const extractLineStatuses = (data, showNames) => {
       disruptedLines.push({
         message: showNames ? line.name : '',
         bgColor: lineColours[line.name].colour || '#000',
+        solid: lineColours[line.name].solid
       });
     }
   });
