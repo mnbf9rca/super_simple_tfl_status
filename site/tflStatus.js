@@ -5,7 +5,7 @@
 // License: MIT
 // version 0.1.0
 
-// Define line colors
+// Define line colours
 // https://content.tfl.gov.uk/tfl-colour-standard-issue-08.pdf
 // plus new Overground line names: https://blog.tfl.gov.uk/2024/03/08/london-overground-lines/
 const lineColours = {
