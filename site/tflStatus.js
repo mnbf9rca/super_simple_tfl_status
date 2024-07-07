@@ -7,23 +7,61 @@
 
 // Define line colors
 // https://content.tfl.gov.uk/tfl-colour-standard-issue-08.pdf
-const lineColors = {
-  'Bakerloo': '#A65A2A',
-  'Central': '#E1251B',
-  'Circle': '#FFCD00',
-  'District': '#007934',
-  'Hammersmith & City': '#EC9BAD',
-  'Jubilee': '#7B868C',
-  'Metropolitan': '#870F54',
-  'Northern': '#000000',
-  'Piccadilly': '#000F9F',
-  'Victoria': '#00A0DF',
-  'Waterloo & City': '#6BCDB2',
-  'Transport for London': '#000F9F',
-  'DLR': '#00AFAA',
-  'Elizabeth line': '#773DBD',
-  'London Overground': '#EE7623',
+// plus new Overground line names: https://blog.tfl.gov.uk/2024/03/08/london-overground-lines/
+const lineColours = {
+  'Bakerloo': { 'colour': '#A65A2A', 'striped': false },
+  'Central': { 'colour': '#E1251B', 'striped': false },
+  'Circle': { 'colour': '#FFCD00', 'striped': false },
+  'District': { 'colour': '#007934', 'striped': false },
+  'Hammersmith & City': { 'colour': '#EC9BAD', 'striped': false },
+  'Jubilee': { 'colour': '#7B868C', 'striped': false },
+  'Metropolitan': { 'colour': '#870F54', 'striped': false },
+  'Northern': { 'colour': '#000000', 'striped': false },
+  'Piccadilly': { 'colour': '#000F9F', 'striped': false },
+  'Victoria': { 'colour': '#00A0DF', 'striped': false },
+  'Waterloo & City': { 'colour': '#6BCDB2', 'striped': false },
+  'Transport for London': { 'colour': '#000F9F', 'striped': false },
+  'DLR': { 'colour': '#00AFAA', 'striped': false },
+  'Elizabeth line': { 'colour': '#773DBD', 'striped': false },
+  'London Overground': { 'colour': '#EE7623', 'striped': false },
+  'Liberty': { 'colour': '#61686B', 'striped': true },
+  'Lioness': { 'colour': '#FFA600', 'striped': true },
+  'Mildmay': { 'colour': '#006FE6', 'striped': true },
+  'Suffragette': { 'colour': '#18A95D', 'striped': true },
+  'Weaver': { 'colour': '#9B0058', 'striped': true },
+  'Windrush': { 'colour': '#DC241F', 'striped': true }
 };
+
+// Create a new style element. We use this to add a stripe to the Overground status blocks
+// and to add a text shadow to the status blocks so the text is more readable
+const style = document.createElement('style');
+style.textContent = `.status-block {
+  position: relative;
+  color: white;
+}
+
+.status-text {
+  position: relative;
+  z-index: 2; /* Text is above the stripe */
+  background-color: inherit; /* Text background colour matches the block's background colour */
+  padding: 0.5em;
+  width: fit-content
+}
+
+.stripe {
+  content: "";
+  position: absolute;
+  top: 33.33%; /* Position the stripe in the middle */
+  left: 0;
+  height: 33.33%; /* Stripe takes up 1/3 of the block height */
+  width: 100%; /* Stripe spans the entire width of the block */
+  background-color: white; /* Stripe colour */
+  z-index: 1; /* Stripe is below the text */
+}`;
+
+// Append the style element to the head of the document
+document.head.appendChild(style);
+
 
 // Function to extract max-age from Cache-Control header
 const extractMaxAge = (cacheControlHeader) => {
@@ -65,7 +103,8 @@ const extractLineStatuses = (data, showNames) => {
       allOtherLinesGood = false;
       disruptedLines.push({
         message: showNames ? line.name : '',
-        bgColor: lineColors[line.name] || '#000',
+        bgColour: lineColours[line.name].colour || '#000',
+        striped: lineColours[line.name].striped
       });
     }
   });
@@ -98,8 +137,8 @@ const fetchTfLStatus = async (modes, showNames) => {
 
     const { allOtherLinesGood, disruptedLines } = extractLineStatuses(data, showNames);
     const statuses = allOtherLinesGood
-      ? [{ message: 'Good service on all lines', bgColor: '#004A9C' }]
-      : disruptedLines.concat(showNames ? [{ message: 'Good service on all other lines', bgColor: '#004A9C' }] : []);
+      ? [{ message: 'Good service on all lines', bgColour: '#004A9C' }]
+      : disruptedLines.concat(showNames ? [{ message: 'Good service on all other lines', bgColour: '#004A9C' }] : []);
 
     clearAndRender(statuses);
     scheduleNextFetch(maxAge);
@@ -117,8 +156,19 @@ const renderStatusBlocks = (statuses) => {
   statuses.forEach(status => {
     const block = document.createElement('div');
     block.className = 'status-block';
-    block.style.backgroundColor = status.bgColor;
-    block.textContent = status.message;
+    block.style.backgroundColor = status.bgColour;
+
+    const text = document.createElement('div');
+    text.className = 'status-text';
+    text.textContent = status.message;
+    block.appendChild(text);
+
+    if (status.striped) {
+      const stripe = document.createElement('div');
+      stripe.className = 'stripe';
+      block.appendChild(stripe);
+    }
+
     document.body.appendChild(block);
   });
 };
@@ -151,7 +201,7 @@ const printUsageInstructions = () => {
   console.log('from https://github.com/mnbf9rca/super_simple_tfl_status')
   console.log('Usage Instructions:');
   console.log('1. mode: The mode of transportation. Default is "tube,elizabeth-line". Recommended list of modes: tube,elizabeth-line,dlr,overground.');
-  console.log('   You can put any value here - it will be passed to TfL API which may return an error (check console).');  
+  console.log('   You can put any value here - it will be passed to TfL API which may return an error (check console).');
   console.log('   Example: ?mode=tube');
   console.log('2. names: Whether to show names of the lines. Default is false.');
   console.log('   Example: ?names=true');
