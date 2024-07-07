@@ -156,7 +156,7 @@ describe('renderStatusBlocks', () => {
   test('should render a single status block correctly and set --total-blocks', () => {
     const statuses = [{
       message: 'Good service on all lines',
-      bgColor: '#004A9C',
+      bgColour: '#004A9C',
     }];
 
     renderStatusBlocks(statuses);
@@ -172,10 +172,10 @@ describe('renderStatusBlocks', () => {
 
   test('should render multiple status blocks correctly and set --total-blocks', () => {
     const statuses = [
-      { message: 'Good service on all lines', bgColor: '#004A9C' },
-      { message: 'Central', bgColor: '#E1251B', striped: false },
-      { message: ' ', bgColor: '#FFFFFF', striped: false },
-      { message: 'Lioness', bgColor: '#FFA600', striped: true }
+      { message: 'Good service on all lines', bgColour: '#004A9C' },
+      { message: 'Central', bgColour: '#E1251B', striped: false },
+      { message: ' ', bgColour: '#FFFFFF', striped: false },
+      { message: 'Lioness', bgColour: '#FFA600', striped: true }
     ];
 
     renderStatusBlocks(statuses);
@@ -202,7 +202,7 @@ describe('renderStatusBlocks', () => {
     // should also have the striped class
     expect(blocks[3].textContent).toBe('Lioness');
     expect(blocks[3].style.backgroundColor).toBe('rgb(255, 166, 0)');
-    expect(blocks[3].classList.contains('striped')).toBe(true);
+    expect(blocks[3].querySelector('.stripe')).not.toBeNull(); // striped
 
     // Validate --total-blocks CSS property
     expect(window.getComputedStyle(document.documentElement).getPropertyValue('--total-blocks')).toBe("4");
@@ -231,13 +231,13 @@ describe('extractLineStatuses', () => {
     it('should identify the disrupted line, with showNames=true', () => {
       const { allOtherLinesGood, disruptedLines } = extractLineStatuses(singleDisruptionResponse, true);
       expect(allOtherLinesGood).toBe(false);
-      expect(disruptedLines).toEqual([{ message: 'Waterloo & City', bgColor: '#6BCDB2', striped: false }]);
+      expect(disruptedLines).toEqual([{ message: 'Waterloo & City', bgColour: '#6BCDB2', striped: false }]);
     });
 
     it('should identify the disrupted line, with showNames=false', () => {
       const { allOtherLinesGood, disruptedLines } = extractLineStatuses(singleDisruptionResponse, false);
       expect(allOtherLinesGood).toBe(false);
-      expect(disruptedLines).toEqual([{ message: '', bgColor: '#6BCDB2', striped: false }]);
+      expect(disruptedLines).toEqual([{ message: '', bgColour: '#6BCDB2', striped: false }]);
     });
   });
 
@@ -246,10 +246,10 @@ describe('extractLineStatuses', () => {
       const { allOtherLinesGood, disruptedLines } = extractLineStatuses(multipleDisruptionsResponse, true);
       expect(allOtherLinesGood).toBe(false);
       expect(disruptedLines).toEqual([
-        { message: 'Central', bgColor: '#E1251B', striped: false },
-        { message: 'Metropolitan', bgColor: '#870F54', striped: false },
-        { message: 'Piccadilly', bgColor: '#000F9F', striped: false },
-        { message: 'Waterloo & City', bgColor: '#6BCDB2', striped: false },
+        { message: 'Central', bgColour: '#E1251B', striped: false },
+        { message: 'Metropolitan', bgColour: '#870F54', striped: false },
+        { message: 'Piccadilly', bgColour: '#000F9F', striped: false },
+        { message: 'Waterloo & City', bgColour: '#6BCDB2', striped: false },
       ]);
     });
 
@@ -257,10 +257,10 @@ describe('extractLineStatuses', () => {
       const { allOtherLinesGood, disruptedLines } = extractLineStatuses(multipleDisruptionsResponse, false);
       expect(allOtherLinesGood).toBe(false);
       expect(disruptedLines).toEqual([
-        { message: '', bgColor: '#E1251B', striped: false },
-        { message: '', bgColor: '#870F54', striped: false },
-        { message: '', bgColor: '#000F9F', striped: false },
-        { message: '', bgColor: '#6BCDB2', striped: false },
+        { message: '', bgColour: '#E1251B', striped: false },
+        { message: '', bgColour: '#870F54', striped: false },
+        { message: '', bgColour: '#000F9F', striped: false },
+        { message: '', bgColour: '#6BCDB2', striped: false },
       ]);
     });
   });
@@ -348,14 +348,14 @@ describe('clearAndRender', () => {
   });
 
   it('should call renderFunction with given statuses', () => {
-    const mockStatuses = [{ message: 'test', bgColor: '#fff' }];
+    const mockStatuses = [{ message: 'test', bgColour: '#fff' }];
     clearAndRender(mockStatuses, mockRenderFunction);
     expect(mockRenderFunction).toHaveBeenCalledWith(mockStatuses);
   });
 
   it('should clear and render the statuses correctly', () => {
     document.body.innerHTML = '<div class="old-status"></div>';
-    const statuses = [{ message: 'New Status', bgColor: '#004A9C' }];
+    const statuses = [{ message: 'New Status', bgColour: '#004A9C' }];
 
     clearAndRender(statuses);
 
@@ -405,7 +405,7 @@ describe('fetchTfLStatus', () => {
     expect(result).toEqual([
       {
         message: 'Good service on all lines',
-        bgColor: '#004A9C',
+        bgColour: '#004A9C',
       },
     ]);
   });
@@ -421,11 +421,11 @@ describe('fetchTfLStatus', () => {
     expect(result).toEqual([
       {
         message: 'Waterloo & City',
-        bgColor: '#6BCDB2',
+        bgColour: '#6BCDB2',
         striped: false
       },
       {
-        bgColor: "#004A9C",
+        bgColour: "#004A9C",
         message: "Good service on all other lines",
       }
     ]);
@@ -442,26 +442,26 @@ describe('fetchTfLStatus', () => {
     expect(result).toEqual([
       {
         message: 'Central',
-        bgColor: '#E1251B',
+        bgColour: '#E1251B',
         striped: false
       },
       {
         message: 'Metropolitan',
-        bgColor: '#870F54',
+        bgColour: '#870F54',
         striped: false
       },
       {
         message: 'Piccadilly',
-        bgColor: '#000F9F',
+        bgColour: '#000F9F',
         striped: false
       },
       {
         message: 'Waterloo & City',
-        bgColor: '#6BCDB2',
+        bgColour: '#6BCDB2',
         striped: false
       },
       {
-        bgColor: "#004A9C",
+        bgColour: "#004A9C",
         message: "Good service on all other lines",
       }]);
   });
@@ -477,7 +477,7 @@ describe('fetchTfLStatus', () => {
     expect(result).toEqual([
       {
         message: 'Good service on all lines',
-        bgColor: '#004A9C',
+        bgColour: '#004A9C',
       },
     ]);
   });
@@ -493,7 +493,7 @@ describe('fetchTfLStatus', () => {
     expect(result).toEqual([
       {
         message: '',
-        bgColor: '#6BCDB2',
+        bgColour: '#6BCDB2',
         striped: false
       }
     ]);
@@ -510,22 +510,22 @@ describe('fetchTfLStatus', () => {
     expect(result).toEqual([
       {
         message: '',
-        bgColor: '#E1251B',
+        bgColour: '#E1251B',
         striped: false
       },
       {
         message: '',
-        bgColor: '#870F54',
+        bgColour: '#870F54',
         striped: false
       },
       {
         message: '',
-        bgColor: '#000F9F',
+        bgColour: '#000F9F',
         striped: false
       },
       {
         message: '',
-        bgColor: '#6BCDB2',
+        bgColour: '#6BCDB2',
         striped: false
       }
     ]);
