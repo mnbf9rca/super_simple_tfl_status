@@ -7,28 +7,29 @@
 
 // Define line colors
 // https://content.tfl.gov.uk/tfl-colour-standard-issue-08.pdf
+// plus new Overground line names: https://blog.tfl.gov.uk/2024/03/08/london-overground-lines/
 const lineColors = {
-  'Bakerloo': '#A65A2A',
-  'Central': '#E1251B',
-  'Circle': '#FFCD00',
-  'District': '#007934',
-  'Hammersmith & City': '#EC9BAD',
-  'Jubilee': '#7B868C',
-  'Metropolitan': '#870F54',
-  'Northern': '#000000',
-  'Piccadilly': '#000F9F',
-  'Victoria': '#00A0DF',
-  'Waterloo & City': '#6BCDB2',
-  'Transport for London': '#000F9F',
-  'DLR': '#00AFAA',
-  'Elizabeth line': '#773DBD',
-  'London Overground': '#EE7623',
-  'Liberty': '#61686B',
-  'Lioness': '#FFA600',
-  'Mildmay': '#006FE6',
-  'Suffragette': '#18A95D',
-  'Weaver': '#9B0058',
-  'Windrush': '#DC241F'
+  'Bakerloo': { 'colour': '#A65A2A', 'solid': true },
+  'Central': { 'colour': '#E1251B', 'solid': true },
+  'Circle': { 'colour': '#FFCD00', 'solid': true },
+  'District': { 'colour': '#007934', 'solid': true },
+  'Hammersmith & City': { 'colour': '#EC9BAD', 'solid': true },
+  'Jubilee': { 'colour': '#7B868C', 'solid': true },
+  'Metropolitan': { 'colour': '#870F54', 'solid': true },
+  'Northern': { 'colour': '#000000', 'solid': true },
+  'Piccadilly': { 'colour': '#000F9F', 'solid': true },
+  'Victoria': { 'colour': '#00A0DF', 'solid': true },
+  'Waterloo & City': { 'colour': '#6BCDB2', 'solid': true },
+  'Transport for London': { 'colour': '#000F9F', 'solid': true },
+  'DLR': { 'colour': '#00AFAA', 'solid': true },
+  'Elizabeth line': { 'colour': '#773DBD', 'solid': true },
+  'London Overground': { 'colour': '#EE7623', 'solid': true },
+  'Liberty': { 'colour': '#61686B', 'solid': false },
+  'Lioness': { 'colour': '#FFA600', 'solid': false },
+  'Mildmay': { 'colour': '#006FE6', 'solid': false },
+  'Suffragette': { 'colour': '#18A95D', 'solid': false },
+  'Weaver': { 'colour': '#9B0058', 'solid': false },
+  'Windrush': { 'colour': '#DC241F', 'solid': false }
 };
 
 // Function to extract max-age from Cache-Control header
@@ -71,7 +72,7 @@ const extractLineStatuses = (data, showNames) => {
       allOtherLinesGood = false;
       disruptedLines.push({
         message: showNames ? line.name : '',
-        bgColor: lineColors[line.name] || '#000',
+        bgColor: lineColors[line.name].colour || '#000',
       });
     }
   });
