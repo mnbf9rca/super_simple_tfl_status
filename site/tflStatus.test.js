@@ -173,29 +173,39 @@ describe('renderStatusBlocks', () => {
   test('should render multiple status blocks correctly and set --total-blocks', () => {
     const statuses = [
       { message: 'Good service on all lines', bgColor: '#004A9C' },
-      { message: 'Central', bgColor: '#E1251B' },
-      { message: ' ', bgColor: '#FFFFFF' },
+      { message: 'Central', bgColor: '#E1251B', striped: false },
+      { message: ' ', bgColor: '#FFFFFF', striped: false },
+      { message: 'Lioness', bgColor: '#FFA600', striped: true }
     ];
 
     renderStatusBlocks(statuses);
 
     const blocks = document.querySelectorAll('.status-block');
-    expect(blocks.length).toBe(3);
+    expect(blocks.length).toBe(4);
 
     // Validate first block
     expect(blocks[0].textContent).toBe('Good service on all lines');
     expect(blocks[0].style.backgroundColor).toBe('rgb(0, 74, 156)');
+    expect(blocks[0].classList.contains('striped')).toBe(false);
 
     // Validate second block
     expect(blocks[1].textContent).toBe('Central');
     expect(blocks[1].style.backgroundColor).toBe('rgb(225, 37, 27)');
+    expect(blocks[1].classList.contains('striped')).toBe(false);
 
     // Validate third block
     expect(blocks[2].textContent).toBe(' ');
     expect(blocks[2].style.backgroundColor).toBe('rgb(255, 255, 255)');
+    expect(blocks[2].classList.contains('striped')).toBe(false);
+
+    // Validate fourth block
+    // should also have the striped class
+    expect(blocks[3].textContent).toBe('Lioness');
+    expect(blocks[3].style.backgroundColor).toBe('rgb(255, 166, 0)');
+    expect(blocks[3].classList.contains('striped')).toBe(true);
 
     // Validate --total-blocks CSS property
-    expect(window.getComputedStyle(document.documentElement).getPropertyValue('--total-blocks')).toBe("3");
+    expect(window.getComputedStyle(document.documentElement).getPropertyValue('--total-blocks')).toBe("4");
   });
 });
 
@@ -221,13 +231,13 @@ describe('extractLineStatuses', () => {
     it('should identify the disrupted line, with showNames=true', () => {
       const { allOtherLinesGood, disruptedLines } = extractLineStatuses(singleDisruptionResponse, true);
       expect(allOtherLinesGood).toBe(false);
-      expect(disruptedLines).toEqual([{ message: 'Waterloo & City', bgColor: '#6BCDB2', solid: true }]);
+      expect(disruptedLines).toEqual([{ message: 'Waterloo & City', bgColor: '#6BCDB2', striped: false }]);
     });
 
     it('should identify the disrupted line, with showNames=false', () => {
       const { allOtherLinesGood, disruptedLines } = extractLineStatuses(singleDisruptionResponse, false);
       expect(allOtherLinesGood).toBe(false);
-      expect(disruptedLines).toEqual([{ message: '', bgColor: '#6BCDB2', solid: true }]);
+      expect(disruptedLines).toEqual([{ message: '', bgColor: '#6BCDB2', striped: false }]);
     });
   });
 
@@ -236,10 +246,10 @@ describe('extractLineStatuses', () => {
       const { allOtherLinesGood, disruptedLines } = extractLineStatuses(multipleDisruptionsResponse, true);
       expect(allOtherLinesGood).toBe(false);
       expect(disruptedLines).toEqual([
-        { message: 'Central', bgColor: '#E1251B', solid: true },
-        { message: 'Metropolitan', bgColor: '#870F54', solid: true },
-        { message: 'Piccadilly', bgColor: '#000F9F', solid: true },
-        { message: 'Waterloo & City', bgColor: '#6BCDB2', solid: true },
+        { message: 'Central', bgColor: '#E1251B', striped: false },
+        { message: 'Metropolitan', bgColor: '#870F54', striped: false },
+        { message: 'Piccadilly', bgColor: '#000F9F', striped: false },
+        { message: 'Waterloo & City', bgColor: '#6BCDB2', striped: false },
       ]);
     });
 
@@ -247,10 +257,10 @@ describe('extractLineStatuses', () => {
       const { allOtherLinesGood, disruptedLines } = extractLineStatuses(multipleDisruptionsResponse, false);
       expect(allOtherLinesGood).toBe(false);
       expect(disruptedLines).toEqual([
-        { message: '', bgColor: '#E1251B', solid: true },
-        { message: '', bgColor: '#870F54', solid: true },
-        { message: '', bgColor: '#000F9F', solid: true },
-        { message: '', bgColor: '#6BCDB2', solid: true },
+        { message: '', bgColor: '#E1251B', striped: false },
+        { message: '', bgColor: '#870F54', striped: false },
+        { message: '', bgColor: '#000F9F', striped: false },
+        { message: '', bgColor: '#6BCDB2', striped: false },
       ]);
     });
   });
@@ -412,7 +422,7 @@ describe('fetchTfLStatus', () => {
       {
         message: 'Waterloo & City',
         bgColor: '#6BCDB2',
-        solid: true
+        striped: false
       },
       {
         bgColor: "#004A9C",
@@ -433,22 +443,22 @@ describe('fetchTfLStatus', () => {
       {
         message: 'Central',
         bgColor: '#E1251B',
-        solid: true
+        striped: false
       },
       {
         message: 'Metropolitan',
         bgColor: '#870F54',
-        solid: true
+        striped: false
       },
       {
         message: 'Piccadilly',
         bgColor: '#000F9F',
-        solid: true
+        striped: false
       },
       {
         message: 'Waterloo & City',
         bgColor: '#6BCDB2',
-        solid: true
+        striped: false
       },
       {
         bgColor: "#004A9C",
@@ -484,7 +494,7 @@ describe('fetchTfLStatus', () => {
       {
         message: '',
         bgColor: '#6BCDB2',
-        solid: true
+        striped: false
       }
     ]);
   });
@@ -501,22 +511,22 @@ describe('fetchTfLStatus', () => {
       {
         message: '',
         bgColor: '#E1251B',
-        solid: true
+        striped: false
       },
       {
         message: '',
         bgColor: '#870F54',
-        solid: true
+        striped: false
       },
       {
         message: '',
         bgColor: '#000F9F',
-        solid: true
+        striped: false
       },
       {
         message: '',
         bgColor: '#6BCDB2',
-        solid: true
+        striped: false
       }
     ]);
   });
@@ -532,7 +542,7 @@ describe('printUsageInstructions', () => {
 
   beforeAll(() => {
     // Mock console.log
-    consoleLogMock = jest.spyOn(console, 'log').mockImplementation(() => {});
+    consoleLogMock = jest.spyOn(console, 'log').mockImplementation(() => { });
   });
 
   afterAll(() => {
