@@ -2,7 +2,7 @@
 
 ## Overview
 
-Get real-time TfL (Transport for London) service status in a straightforward and minimalist design. No more fumbling through apps or web pages to know if your line is running smoothly. Built with pure JavaScript, and calling the [TfL API](https://api-portal.tfl.gov.uk/api-details#api=Line&operation=Line_StatusByModeByPathModesQueryDetailQuerySeverityLevel) directly, this lightweight tool can be easily integrated into your workflow or dashboard.
+Get real-time TfL (Transport for London) service status in a straightforward and minimalist design. No more fumbling through apps or web pages to know if your line is running smoothly. Built with pure JavaScript (ok, a tiny bit of CSS to allow the new [Overground line colours](https://madeby.tfl.gov.uk/2024/02/15/overground_line_names/) to be striped), and calling the [TfL API](https://api-portal.tfl.gov.uk/api-details#api=Line&operation=Line_StatusByModeByPathModesQueryDetailQuerySeverityLevel) directly, this lightweight tool can be easily integrated into your workflow or dashboard.
 
 ![TfL Status Example with and without names](img/browsers.png)
 
@@ -24,7 +24,7 @@ Click on the live links to explore different configurations and find the one tha
 ## Features
 
 - 🚀 **Fast**: Fetches and displays statuses in seconds
-- 🎨 **Color-Coded**: Uses official TfL line colors for quick identification
+- 🎨 **Colour-Coded**: Uses official TfL line colours for quick identification
 - 🔍 **Configurable**: Choose which modes of transport to display
 - 🛠 **Simple Codebase**: Easy to extend or modify
 
@@ -56,8 +56,8 @@ Understand how the `names` parameter changes the display when there are disrupti
 | Scenario                 | `names=true`                      | `names=false`                     |
 |--------------------------|-----------------------------------|----------------------------------|
 | **No Disruptions**       | Shows "Good service on all lines". | Shows "Good service on all lines". |
-| **Some Disruptions**     | Shows disrupted lines with their names, followed by "Good service on all other lines."| Shows only the colors of disrupted lines.  |
-| **All Lines Disrupted**  | Shows all lines with disruptions and their names. | Shows only the colors of all disrupted lines. |
+| **Some Disruptions**     | Shows disrupted lines with their names, followed by "Good service on all other lines."| Shows only the colours of disrupted lines.  |
+| **All Lines Disrupted**  | Shows all lines with disruptions and their names. | Shows only the colours of all disrupted lines. |
 
 ## Contributing
 
