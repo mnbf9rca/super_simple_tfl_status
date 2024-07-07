@@ -8,7 +8,7 @@
 // Define line colors
 // https://content.tfl.gov.uk/tfl-colour-standard-issue-08.pdf
 // plus new Overground line names: https://blog.tfl.gov.uk/2024/03/08/london-overground-lines/
-const lineColors = {
+const lineColours = {
   'Bakerloo': { 'colour': '#A65A2A', 'solid': true },
   'Central': { 'colour': '#E1251B', 'solid': true },
   'Circle': { 'colour': '#FFCD00', 'solid': true },
@@ -72,7 +72,7 @@ const extractLineStatuses = (data, showNames) => {
       allOtherLinesGood = false;
       disruptedLines.push({
         message: showNames ? line.name : '',
-        bgColor: lineColors[line.name].colour || '#000',
+        bgColor: lineColours[line.name].colour || '#000',
       });
     }
   });
