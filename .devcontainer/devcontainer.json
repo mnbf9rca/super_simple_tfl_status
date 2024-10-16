@@ -1,5 +1,5 @@
 {
-	"image": "mcr.microsoft.com/devcontainers/javascript-node:22@sha256:61c3428ca51d3e899b4d2850e0395fd72d67c7e7de5139c9a9d7d6e2843e3284",
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:22@sha256:d493ef047b5ee96655fb543919e6e036dc87582509e6c622c9fe999b6eeb5148",
 	"customizations": {
 		"vscode": {
 			"extensions": [
