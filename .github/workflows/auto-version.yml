@@ -87,10 +87,16 @@ jobs:
 
       - name: Create deployment bundle
         run: |
+          # Verify required files exist
+          test -f package.json || { echo "❌ package.json not found"; exit 1; }
+          test -f package-lock.json || { echo "❌ package-lock.json not found"; exit 1; }
+          test -f README.md || { echo "❌ README.md not found"; exit 1; }
+          test -d site || { echo "❌ site/ directory not found"; exit 1; }
+
+          # Create deployment bundle
           mkdir -p dist
           cp -r site/* dist/
-          cp package.json package-lock.json dist/
-          cp readme.md dist/
+          cp package.json package-lock.json README.md dist/
           tar -czf tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz dist/
 
       - name: Generate build provenance attestation
