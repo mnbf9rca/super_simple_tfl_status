@@ -579,106 +579,6 @@ describe('fetchTfLStatus', () => {
   });
 });
 
-describe('isDevelopmentEnvironment', () => {
-  const { isDevelopmentEnvironment } = require('./tflStatus');
-
-  it('should return true when NODE_ENV is development', () => {
-    const originalNodeEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'development';
-
-    expect(isDevelopmentEnvironment()).toBe(true);
-
-    // Restore original value
-    process.env.NODE_ENV = originalNodeEnv;
-  });
-
-  it('should return false in non-development environments', () => {
-    const originalNodeEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'test';
-
-    expect(isDevelopmentEnvironment()).toBe(false);
-
-    // Restore original value
-    process.env.NODE_ENV = originalNodeEnv;
-  });
-
-  it('should return true for localhost hostname', () => {
-    const originalNodeEnv = process.env.NODE_ENV;
-    const originalLocation = window.location;
-
-    process.env.NODE_ENV = 'test'; // Not development
-
-    // Mock the entire location object
-    delete window.location;
-    window.location = {
-      ...originalLocation,
-      hostname: 'localhost'
-    };
-
-    expect(isDevelopmentEnvironment()).toBe(true);
-
-    // Restore original values
-    process.env.NODE_ENV = originalNodeEnv;
-    window.location = originalLocation;
-  });
-
-  it('should return true for 127.0.0.1 hostname', () => {
-    const originalNodeEnv = process.env.NODE_ENV;
-    const originalLocation = window.location;
-
-    process.env.NODE_ENV = 'test'; // Not development
-
-    delete window.location;
-    window.location = {
-      ...originalLocation,
-      hostname: '127.0.0.1'
-    };
-
-    expect(isDevelopmentEnvironment()).toBe(true);
-
-    // Restore original values
-    process.env.NODE_ENV = originalNodeEnv;
-    window.location = originalLocation;
-  });
-
-  it('should return true for 0.0.0.0 hostname', () => {
-    const originalNodeEnv = process.env.NODE_ENV;
-    const originalLocation = window.location;
-
-    process.env.NODE_ENV = 'test'; // Not development
-
-    delete window.location;
-    window.location = {
-      ...originalLocation,
-      hostname: '0.0.0.0'
-    };
-
-    expect(isDevelopmentEnvironment()).toBe(true);
-
-    // Restore original values
-    process.env.NODE_ENV = originalNodeEnv;
-    window.location = originalLocation;
-  });
-
-  it('should return false for production hostname', () => {
-    const originalNodeEnv = process.env.NODE_ENV;
-    const originalLocation = window.location;
-
-    process.env.NODE_ENV = 'test'; // Not development
-
-    delete window.location;
-    window.location = {
-      ...originalLocation,
-      hostname: 'production.example.com'
-    };
-
-    expect(isDevelopmentEnvironment()).toBe(false);
-
-    // Restore original values
-    process.env.NODE_ENV = originalNodeEnv;
-    window.location = originalLocation;
-  });
-});
 
 describe('printUsageInstructions', () => {
   let consoleLogMock;
@@ -698,12 +598,7 @@ describe('printUsageInstructions', () => {
     consoleLogMock.mockRestore();
   });
 
-  it('should print some usage instructions in development mode', () => {
-    // Set NODE_ENV to development to trigger console.log
-    const originalNodeEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'development';
-
-    jest.resetModules();
+  it('should print usage instructions', () => {
     const tflStatus = require('./tflStatus');
     tflStatus.printUsageInstructions();
 
@@ -716,82 +611,105 @@ describe('printUsageInstructions', () => {
       2,
       'from https://github.com/mnbf9rca/super_simple_tfl_status'
     );
+  });
+});
 
-    // Restore original NODE_ENV
-    process.env.NODE_ENV = originalNodeEnv;
+describe('initStyles', () => {
+  it('should append style to document head', () => {
+    const tflStatus = require('./tflStatus');
+    const originalAppendChild = document.head.appendChild;
+    const appendChildMock = jest.fn();
+    document.head.appendChild = appendChildMock;
+
+    tflStatus.initStyles();
+
+    expect(appendChildMock).toHaveBeenCalledTimes(1);
+    expect(appendChildMock).toHaveBeenCalledWith(expect.any(HTMLStyleElement));
+
+    // Restore original method
+    document.head.appendChild = originalAppendChild;
+  });
+});
+
+describe('fetchTfLStatus error handling', () => {
+  let consoleErrorMock;
+
+  beforeAll(() => {
+    consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
-  it('should print usage instructions when running on localhost', () => {
-    const originalNodeEnv = process.env.NODE_ENV;
-    const originalLocation = window.location;
-
-    process.env.NODE_ENV = 'test'; // Not development
-
-    delete window.location;
-    window.location = {
-      ...originalLocation,
-      hostname: 'localhost'
-    };
-
-    jest.resetModules();
-    const tflStatus = require('./tflStatus');
-    tflStatus.printUsageInstructions();
-
-    expect(consoleLogMock.mock.calls.length).toBeGreaterThanOrEqual(2);
-    expect(consoleLogMock).toHaveBeenNthCalledWith(
-      1,
-      'Super simple TfL status'
-    );
-
-    // Restore original values
-    process.env.NODE_ENV = originalNodeEnv;
-    window.location = originalLocation;
+  afterEach(() => {
+    consoleErrorMock.mockClear();
   });
 
-  it('should print usage instructions when running on 127.0.0.1', () => {
-    const originalNodeEnv = process.env.NODE_ENV;
-    const originalLocation = window.location;
-
-    process.env.NODE_ENV = 'test'; // Not development
-
-    delete window.location;
-    window.location = {
-      ...originalLocation,
-      hostname: '127.0.0.1'
-    };
-
-    jest.resetModules();
-    const tflStatus = require('./tflStatus');
-    tflStatus.printUsageInstructions();
-
-    expect(consoleLogMock.mock.calls.length).toBeGreaterThanOrEqual(2);
-    expect(consoleLogMock).toHaveBeenNthCalledWith(
-      1,
-      'Super simple TfL status'
-    );
-
-    // Restore original values
-    process.env.NODE_ENV = originalNodeEnv;
-    window.location = originalLocation;
+  afterAll(() => {
+    consoleErrorMock.mockRestore();
   });
 
-  it('should not print usage instructions in non-development mode', () => {
-    // Ensure NODE_ENV is not development and not localhost
-    const originalNodeEnv = process.env.NODE_ENV;
-    const originalWindow = global.window;
+  it('should handle fetch errors gracefully', async () => {
+    global.fetch = jest.fn().mockRejectedValue(new Error('Network error'));
 
-    process.env.NODE_ENV = 'test';
-    // Safely disable window to ensure no localhost detection
-    global.window = undefined;
-
-    jest.resetModules();
     const tflStatus = require('./tflStatus');
-    tflStatus.printUsageInstructions();
+    const result = await tflStatus.fetchTfLStatus('tube', false);
 
-    expect(consoleLogMock.mock.calls).toHaveLength(0);
+    expect(result).toEqual([]);
+    expect(consoleErrorMock).toHaveBeenCalledWith('Failed to fetch TfL status:', expect.any(Error));
+  });
+});
 
-    // Restore original values
-    process.env.NODE_ENV = originalNodeEnv;
-    global.window = originalWindow;
+describe('fetchAndRenderStatus', () => {
+  it('should execute without errors', async () => {
+    // Mock fetch to avoid actual API calls
+    global.fetch = jest.fn().mockResolvedValue({
+      headers: { get: () => 'max-age=300' },
+      json: () => Promise.resolve([])
+    });
+
+    const tflStatus = require('./tflStatus');
+
+    // Should not throw an error
+    await expect(tflStatus.fetchAndRenderStatus()).resolves.not.toThrow();
+  });
+});
+
+describe('scheduleCacheRefresh', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
+  });
+
+  it('should schedule cache refresh after cache_ttl', () => {
+    // Mock fetch for the scheduled call
+    global.fetch = jest.fn().mockResolvedValue({
+      headers: { get: () => 'max-age=300' },
+      json: () => Promise.resolve([])
+    });
+
+    const tflStatus = require('./tflStatus');
+    tflStatus.scheduleCacheRefresh();
+
+    // Fast-forward time by cache_ttl (300 seconds)
+    jest.advanceTimersByTime(300 * 1000);
+
+    expect(document.body.innerHTML).toBe('');
+  });
+});
+
+describe('init', () => {
+  it('should execute without errors', () => {
+    // Mock fetch to avoid actual API calls
+    global.fetch = jest.fn().mockResolvedValue({
+      headers: { get: () => 'max-age=300' },
+      json: () => Promise.resolve([])
+    });
+
+    const tflStatus = require('./tflStatus');
+
+    // Should not throw an error
+    expect(() => tflStatus.init()).not.toThrow();
   });
 });

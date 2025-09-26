@@ -265,66 +265,24 @@ const scheduleCacheRefresh = () => {
   }, cache_ttl * 1000);
 };
 
-/**
- * Detects if the application is running in a development environment.
- * Checks NODE_ENV first, then falls back to hostname detection for browsers.
- *
- * @returns {boolean} True if in development environment, false otherwise
- * @example
- * // In Node.js with NODE_ENV=development
- * isDevelopmentEnvironment() // returns true
- *
- * // In browser on localhost
- * isDevelopmentEnvironment() // returns true
- *
- * // In browser on production domain
- * isDevelopmentEnvironment() // returns false
- */
-const isDevelopmentEnvironment = () => {
-  // Check NODE_ENV first (Node.js environments)
-  if (
-    typeof process !== 'undefined' &&
-    process.env &&
-    process.env.NODE_ENV === 'development'
-  ) {
-    return true;
-  }
-
-  // Fallback to hostname check for browser environments
-  if (
-    typeof window !== 'undefined' &&
-    window.location &&
-    window.location.hostname
-  ) {
-    const devHosts = ['localhost', '127.0.0.1', '0.0.0.0'];
-    const hostname = window.location.hostname;
-    // Only return true if hostname is explicitly in the dev hosts list and not empty
-    return hostname.length > 0 && devHosts.includes(hostname);
-  }
-
-  return false;
-};
 
 const printUsageInstructions = () => {
-  // Print usage instructions only in debug mode
-  if (isDevelopmentEnvironment()) {
-    console.log('Super simple TfL status');
-    console.log('from https://github.com/mnbf9rca/super_simple_tfl_status');
-    console.log('Usage Instructions:');
-    console.log(
-      '1. mode: The mode of transportation. Default is "tube,elizabeth-line". Recommended list of modes: tube,elizabeth-line,dlr,overground.'
-    );
-    console.log(
-      '   You can put any value here - it will be passed to TfL API which may return an error (check console).'
-    );
-    console.log('   Example: ?mode=tube');
-    console.log(
-      '2. names: Whether to show names of the lines. Default is false.'
-    );
-    console.log('   Example: ?names=true');
-    console.log('3. of course, you can combine them.');
-    console.log('   Example: ?names=true&mode=tube,elizabeth-line');
-  }
+  console.log('Super simple TfL status');
+  console.log('from https://github.com/mnbf9rca/super_simple_tfl_status');
+  console.log('Usage Instructions:');
+  console.log(
+    '1. mode: The mode of transportation. Default is "tube,elizabeth-line". Recommended list of modes: tube,elizabeth-line,dlr,overground.'
+  );
+  console.log(
+    '   You can put any value here - it will be passed to TfL API which may return an error (check console).'
+  );
+  console.log('   Example: ?mode=tube');
+  console.log(
+    '2. names: Whether to show names of the lines. Default is false.'
+  );
+  console.log('   Example: ?names=true');
+  console.log('3. of course, you can combine them.');
+  console.log('   Example: ?names=true&mode=tube,elizabeth-line');
 };
 
 /**
@@ -367,9 +325,9 @@ if (typeof module !== 'undefined') {
     clearAndRender,
     fetchTfLStatus,
     renderStatusBlocks,
+    fetchAndRenderStatus,
     setTimeout,
     printUsageInstructions,
-    isDevelopmentEnvironment,
     init,
     initStyles,
     scheduleCacheRefresh,
