@@ -52,7 +52,17 @@ jobs:
       - name: Get current version
         id: current_version
         run: |
-          CURRENT=$(node -p "require('./package.json').version")
+          # Get the latest version from git tags, fallback to package.json
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -n "$LATEST_TAG" ]; then
+            # Remove 'v' prefix if present
+            CURRENT=${LATEST_TAG#v}
+            echo "Using latest git tag: $LATEST_TAG (version: $CURRENT)"
+          else
+            # Fallback to package.json for initial release
+            CURRENT=$(node -p "require('./package.json').version")
+            echo "No git tags found, using package.json version: $CURRENT"
+          fi
           echo "version=$CURRENT" >> $GITHUB_OUTPUT
 
       - name: Calculate new version
