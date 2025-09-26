@@ -102,7 +102,12 @@ const extractMaxAge = (cacheControlHeader) => {
  */
 const getModesFromURL = (urlParams) => {
   const mode = urlParams.get('mode');
-  return mode ? mode.trim() : 'tube,elizabeth-line';
+  if (!mode) return 'tube,elizabeth-line';
+  return mode
+    .split(',')
+    .map(m => m.trim())
+    .filter(Boolean)
+    .join(',');
 };
 
 /**
@@ -116,7 +121,8 @@ const getModesFromURL = (urlParams) => {
  * shouldShowNames(new URLSearchParams("?names=false")) // returns false
  */
 const shouldShowNames = (urlParams) => {
-  return urlParams.get('names') === 'true';
+  const namesParam = urlParams.get('names');
+  return !!(namesParam && namesParam.toLowerCase() === 'true');
 };
 
 /**
@@ -125,7 +131,7 @@ const shouldShowNames = (urlParams) => {
  *
  * @param {Array} data - Array of line objects from TfL API
  * @param {boolean} showNames - Whether to include line names in output
- * @returns {{allOtherLinesGood: boolean, disruptedLines: Array}} Processing results
+ * @returns {{allOtherLinesGood: boolean, disruptedLines: Array<{message: string, bgColour: string, striped: boolean}>}} Processing results
  * @example
  * const result = extractLineStatuses(apiData, true);
  * // result.allOtherLinesGood = false
@@ -174,7 +180,7 @@ const clearAndRender = (statuses, renderFunction = renderStatusBlocks) => {
  *
  * @param {string} modes - Comma-separated list of transport modes (e.g., "tube,elizabeth-line")
  * @param {boolean} showNames - Whether to display line names in the status blocks
- * @returns {Promise<Array>} Array of status objects that were rendered
+ * @returns {Promise<Array<{message: string, bgColour: string, striped?: boolean}>>} Array of status objects that were rendered
  * @example
  * const statuses = await fetchTfLStatus("tube,dlr", true);
  * // Returns: [{message: "Good service on all lines", bgColour: "#004A9C"}]
