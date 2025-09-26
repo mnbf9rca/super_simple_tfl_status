@@ -115,6 +115,7 @@ jobs:
           {
             echo 'changelog<<EOF'
             cat CHANGELOG.md
+            echo
             echo 'EOF'
           } >> $GITHUB_OUTPUT
 
