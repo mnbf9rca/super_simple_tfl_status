@@ -306,9 +306,9 @@ describe('setTimeout tests with fake timers', () => {
   it('should execute callback after 1 second', () => {
     const callback = jest.fn();
     setTimeout(callback, 1000);
-    expect(callback).not.toBeCalled();
+    expect(callback).not.toHaveBeenCalled();
     jest.runAllTimers();
-    expect(callback).toBeCalled();
+    expect(callback).toHaveBeenCalled();
     expect(callback).toHaveBeenCalledTimes(1);
   });
 
@@ -316,9 +316,9 @@ describe('setTimeout tests with fake timers', () => {
     const callback = jest.fn();
     const cache_ttl = 300;
     setTimeout(callback, cache_ttl * 1000);
-    expect(callback).not.toBeCalled();
+    expect(callback).not.toHaveBeenCalled();
     jest.runAllTimers();
-    expect(callback).toBeCalled();
+    expect(callback).toHaveBeenCalled();
     expect(callback).toHaveBeenCalledTimes(1);
   });
 
