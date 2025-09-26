@@ -299,7 +299,7 @@ describe('extractLineStatuses', () => {
 });
 
 describe('scheduleNextFetch', () => {
-  const scheduleNextFetch = require('./tflStatus').scheduleNextFetch;
+  const {scheduleNextFetch} = require('./tflStatus');
 
   beforeEach(() => {
     jest.spyOn(global, 'setTimeout');
