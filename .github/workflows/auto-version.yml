@@ -115,7 +115,7 @@ jobs:
           {
             echo 'changelog<<EOF'
             cat CHANGELOG.md
-            echo EOF
+            echo 'EOF'
           } >> $GITHUB_OUTPUT
 
       - name: Create deployment bundle
