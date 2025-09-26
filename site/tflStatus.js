@@ -59,8 +59,10 @@ style.textContent = `.status-block {
   z-index: 1; /* Stripe is below the text */
 }`;
 
-// Append the style element to the head of the document
-document.head.appendChild(style);
+// Function to initialize styles
+const initStyles = () => {
+  document.head.appendChild(style);
+};
 
 
 // Function to extract max-age from Cache-Control header
@@ -187,32 +189,44 @@ const fetchAndRenderStatus = async () => {
 // Cache Time To Live in seconds (for example, 300 seconds or 5 minutes)
 const cache_ttl = 300;
 
-// Reload the status when cache_ttl expires
-setTimeout(() => {
-  // Clear previous statuses
-  document.body.innerHTML = '';
-  // Fetch and render new statuses
-  fetchAndRenderStatus();
-}, cache_ttl * 1000);
-
-const printUsageInstructions = () => {
-  // Print usage instructions
-  console.log('Super simple TfL status');
-  console.log('from https://github.com/mnbf9rca/super_simple_tfl_status')
-  console.log('Usage Instructions:');
-  console.log('1. mode: The mode of transportation. Default is "tube,elizabeth-line". Recommended list of modes: tube,elizabeth-line,dlr,overground.');
-  console.log('   You can put any value here - it will be passed to TfL API which may return an error (check console).');
-  console.log('   Example: ?mode=tube');
-  console.log('2. names: Whether to show names of the lines. Default is false.');
-  console.log('   Example: ?names=true');
-  console.log('3. of course, you can combine them.');
-  console.log('   Example: ?names=true&mode=tube,elizabeth-line');
+// Function to schedule cache refresh
+const scheduleCacheRefresh = () => {
+  setTimeout(() => {
+    // Clear previous statuses
+    document.body.innerHTML = '';
+    // Fetch and render new statuses
+    fetchAndRenderStatus();
+  }, cache_ttl * 1000);
 };
 
-// Call the function
-printUsageInstructions();
-// Initially fetch and render the status
-fetchAndRenderStatus();
+const printUsageInstructions = () => {
+  // Print usage instructions only in debug mode
+  if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') {
+    console.log('Super simple TfL status');
+    console.log('from https://github.com/mnbf9rca/super_simple_tfl_status')
+    console.log('Usage Instructions:');
+    console.log('1. mode: The mode of transportation. Default is "tube,elizabeth-line". Recommended list of modes: tube,elizabeth-line,dlr,overground.');
+    console.log('   You can put any value here - it will be passed to TfL API which may return an error (check console).');
+    console.log('   Example: ?mode=tube');
+    console.log('2. names: Whether to show names of the lines. Default is false.');
+    console.log('   Example: ?names=true');
+    console.log('3. of course, you can combine them.');
+    console.log('   Example: ?names=true&mode=tube,elizabeth-line');
+  }
+};
+
+// Initialize the application
+const init = () => {
+  initStyles();
+  printUsageInstructions();
+  fetchAndRenderStatus();
+  scheduleCacheRefresh();
+};
+
+// Auto-initialize if in browser environment (not in tests)
+if (typeof window !== 'undefined' && typeof document !== 'undefined' && typeof jest === 'undefined') {
+  init();
+}
 
 // Export the functions for testing
 if (typeof module !== 'undefined') {
@@ -226,6 +240,10 @@ if (typeof module !== 'undefined') {
     fetchTfLStatus,
     renderStatusBlocks,
     setTimeout,
-    printUsageInstructions
+    printUsageInstructions,
+    init,
+    initStyles,
+    scheduleCacheRefresh,
+    lineColours
   };
 }

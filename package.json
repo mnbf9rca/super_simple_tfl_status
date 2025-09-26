@@ -1,14 +1,25 @@
 {
   "name": "super_simple_tfl_status",
   "version": "1.0.0",
-  "description": "",
+  "description": "Real-time TfL service status in a minimalist design",
   "main": "index.js",
   "scripts": {
     "test": "jest --config jest.config.js --coverage"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["tfl", "transport", "london", "status", "tube", "javascript"],
+  "author": "mnbf9rca",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mnbf9rca/super_simple_tfl_status"
+  },
+  "homepage": "https://tfl-status.cynexia.com",
+  "bugs": {
+    "url": "https://github.com/mnbf9rca/super_simple_tfl_status/issues"
+  },
+  "engines": {
+    "node": ">=24"
+  },
   "devDependencies": {
     "jest": "29.7.0",
     "jest-date-mock": "1.0.10",
