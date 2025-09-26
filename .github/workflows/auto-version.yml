@@ -61,6 +61,12 @@ jobs:
           CURRENT_VERSION="${{ steps.current_version.outputs.version }}"
           BUMP_TYPE="${{ steps.version_type.outputs.type }}"
 
+          # Validate version format (must be x.y.z)
+          if ! echo "$CURRENT_VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "Error: Invalid version format '$CURRENT_VERSION'. Expected format: x.y.z"
+            exit 1
+          fi
+
           # Calculate new version based on semver
           IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
           MAJOR=${VERSION_PARTS[0]}
@@ -79,6 +85,10 @@ jobs:
               ;;
             patch)
               PATCH=$((PATCH + 1))
+              ;;
+            *)
+              echo "Error: Invalid BUMP_TYPE '$BUMP_TYPE'. Must be one of: major, minor, patch."
+              exit 1
               ;;
           esac
 
