@@ -89,8 +89,8 @@ jobs:
         run: |
           mkdir -p dist
           cp -r site/* dist/
-          cp package.json dist/
-          cp README.md dist/
+          cp package.json package-lock.json dist/
+          cp readme.md dist/
           tar -czf tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz dist/
 
       - name: Generate build provenance attestation
