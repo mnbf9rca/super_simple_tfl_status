@@ -325,6 +325,7 @@ if (typeof module !== 'undefined') {
     clearAndRender,
     fetchTfLStatus,
     renderStatusBlocks,
+    fetchAndRenderStatus,
     setTimeout,
     printUsageInstructions,
     init,

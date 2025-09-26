@@ -612,5 +612,104 @@ describe('printUsageInstructions', () => {
       'from https://github.com/mnbf9rca/super_simple_tfl_status'
     );
   });
+});
 
+describe('initStyles', () => {
+  it('should append style to document head', () => {
+    const tflStatus = require('./tflStatus');
+    const originalAppendChild = document.head.appendChild;
+    const appendChildMock = jest.fn();
+    document.head.appendChild = appendChildMock;
+
+    tflStatus.initStyles();
+
+    expect(appendChildMock).toHaveBeenCalledTimes(1);
+    expect(appendChildMock).toHaveBeenCalledWith(expect.any(HTMLStyleElement));
+
+    // Restore original method
+    document.head.appendChild = originalAppendChild;
+  });
+});
+
+describe('fetchTfLStatus error handling', () => {
+  let consoleErrorMock;
+
+  beforeAll(() => {
+    consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    consoleErrorMock.mockClear();
+  });
+
+  afterAll(() => {
+    consoleErrorMock.mockRestore();
+  });
+
+  it('should handle fetch errors gracefully', async () => {
+    global.fetch = jest.fn().mockRejectedValue(new Error('Network error'));
+
+    const tflStatus = require('./tflStatus');
+    const result = await tflStatus.fetchTfLStatus('tube', false);
+
+    expect(result).toEqual([]);
+    expect(consoleErrorMock).toHaveBeenCalledWith('Failed to fetch TfL status:', expect.any(Error));
+  });
+});
+
+describe('fetchAndRenderStatus', () => {
+  it('should execute without errors', async () => {
+    // Mock fetch to avoid actual API calls
+    global.fetch = jest.fn().mockResolvedValue({
+      headers: { get: () => 'max-age=300' },
+      json: () => Promise.resolve([])
+    });
+
+    const tflStatus = require('./tflStatus');
+
+    // Should not throw an error
+    await expect(tflStatus.fetchAndRenderStatus()).resolves.not.toThrow();
+  });
+});
+
+describe('scheduleCacheRefresh', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
+  });
+
+  it('should schedule cache refresh after cache_ttl', () => {
+    // Mock fetch for the scheduled call
+    global.fetch = jest.fn().mockResolvedValue({
+      headers: { get: () => 'max-age=300' },
+      json: () => Promise.resolve([])
+    });
+
+    const tflStatus = require('./tflStatus');
+    tflStatus.scheduleCacheRefresh();
+
+    // Fast-forward time by cache_ttl (300 seconds)
+    jest.advanceTimersByTime(300 * 1000);
+
+    expect(document.body.innerHTML).toBe('');
+  });
+});
+
+describe('init', () => {
+  it('should execute without errors', () => {
+    // Mock fetch to avoid actual API calls
+    global.fetch = jest.fn().mockResolvedValue({
+      headers: { get: () => 'max-age=300' },
+      json: () => Promise.resolve([])
+    });
+
+    const tflStatus = require('./tflStatus');
+
+    // Should not throw an error
+    expect(() => tflStatus.init()).not.toThrow();
+  });
 });
