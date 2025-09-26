@@ -1,6 +1,5 @@
 {
   "name": "super_simple_tfl_status",
-  "version": "1.0.0",
   "description": "Real-time TfL service status in a minimalist design",
   "main": "index.js",
   "scripts": {
