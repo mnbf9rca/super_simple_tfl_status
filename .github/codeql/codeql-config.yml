@@ -1,4 +1,4 @@
-name: "Super Simple TfL Status CodeQL Config"
+name: 'Super Simple TfL Status CodeQL Config'
 
 disable-default-queries: false
 
@@ -10,6 +10,6 @@ queries:
 
 paths-ignore:
   - node_modules/
-  - "**/*.test.js"
-  - "**/*.spec.js"
+  - '**/*.test.js'
+  - '**/*.spec.js'
   - coverage/

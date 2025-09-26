@@ -1,10 +1,8 @@
 {
-	"image": "mcr.microsoft.com/devcontainers/javascript-node:24@sha256:9b4b7e41bc59ec3cbb0a2e06a231a067fc013f21187d0931d63db122d0a6eca6",
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"Orta.vscode-jest"
-			]
-		}
-	}
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24@sha256:9b4b7e41bc59ec3cbb0a2e06a231a067fc013f21187d0931d63db122d0a6eca6",
+  "customizations": {
+    "vscode": {
+      "extensions": ["Orta.vscode-jest"]
+    }
+  }
 }

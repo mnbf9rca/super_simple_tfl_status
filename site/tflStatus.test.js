@@ -305,7 +305,7 @@ describe('extractLineStatuses', () => {
 });
 
 describe('scheduleNextFetch', () => {
-  const {scheduleNextFetch} = require('./tflStatus');
+  const { scheduleNextFetch } = require('./tflStatus');
 
   beforeEach(() => {
     jest.spyOn(global, 'setTimeout');
@@ -579,7 +579,6 @@ describe('fetchTfLStatus', () => {
   });
 });
 
-
 describe('printUsageInstructions', () => {
   let consoleLogMock;
 
@@ -635,7 +634,9 @@ describe('fetchTfLStatus error handling', () => {
   let consoleErrorMock;
 
   beforeAll(() => {
-    consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => {});
+    consoleErrorMock = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -653,7 +654,10 @@ describe('fetchTfLStatus error handling', () => {
     const result = await tflStatus.fetchTfLStatus('tube', false);
 
     expect(result).toEqual([]);
-    expect(consoleErrorMock).toHaveBeenCalledWith('Failed to fetch TfL status:', expect.any(Error));
+    expect(consoleErrorMock).toHaveBeenCalledWith(
+      'Failed to fetch TfL status:',
+      expect.any(Error)
+    );
   });
 });
 

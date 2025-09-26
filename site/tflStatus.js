@@ -105,7 +105,7 @@ const getModesFromURL = (urlParams) => {
   if (!mode) return 'tube,elizabeth-line';
   return mode
     .split(',')
-    .map(m => m.trim())
+    .map((m) => m.trim())
     .filter(Boolean)
     .join(',');
 };
@@ -264,7 +264,6 @@ const scheduleCacheRefresh = () => {
     fetchAndRenderStatus();
   }, cache_ttl * 1000);
 };
-
 
 const printUsageInstructions = () => {
   console.log('Super simple TfL status');

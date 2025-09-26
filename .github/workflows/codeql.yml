@@ -1,12 +1,12 @@
-name: "CodeQL Security Scan"
+name: 'CodeQL Security Scan'
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
   schedule:
-    - cron: '0 6 * * 1'  # Weekly on Mondays at 6 AM UTC
+    - cron: '0 6 * * 1' # Weekly on Mondays at 6 AM UTC
 
 jobs:
   analyze:
@@ -21,22 +21,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript' ]
+        language: ['javascript']
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@573acd9552f33577783abde4acb66a1058e762e5 # v3
-      with:
-        languages: ${{ matrix.language }}
-        config-file: ./.github/codeql/codeql-config.yml
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@573acd9552f33577783abde4acb66a1058e762e5 # v3
+        with:
+          languages: ${{ matrix.language }}
+          config-file: ./.github/codeql/codeql-config.yml
 
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@573acd9552f33577783abde4acb66a1058e762e5 # v3
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@573acd9552f33577783abde4acb66a1058e762e5 # v3
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@573acd9552f33577783abde4acb66a1058e762e5 # v3
-      with:
-        category: "/language:${{matrix.language}}"
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@573acd9552f33577783abde4acb66a1058e762e5 # v3
+        with:
+          category: '/language:${{matrix.language}}'

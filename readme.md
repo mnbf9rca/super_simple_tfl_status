@@ -17,14 +17,14 @@ Get real-time TfL (Transport for London) service status in a straightforward and
 
 Experience Super Simple TfL Status in action with these quick demo links, or embed these pages in your home automation dashboard.
 
-| Description                   | Live Link |
-|-------------------------------|-----------|
-| **Tube Only**                 | [🚇 Tube](https://tfl-status.cynexia.com/?mode=tube) |
-| **Elizabeth Line Only**       | [🚆 Elizabeth Line](https://tfl-status.cynexia.com/?mode=elizabeth-line) |
-| **Tube + Elizabeth Line**     | [🚇🚆 Combo 1](https://tfl-status.cynexia.com/?mode=tube,elizabeth-line) |
-| **Tube + Overground**         | [🚇🚞 Combo 2](https://tfl-status.cynexia.com/?mode=tube,overground) |
-| **All Modes**                 | [🌐 All Modes](https://tfl-status.cynexia.com/?mode=tube,elizabeth-line,overground) |
-| **All Modes + Names**         | [🌐 All Modes + Names](https://tfl-status.cynexia.com/?mode=tube,elizabeth-line,overground&names=true) |
+| Description               | Live Link                                                                                              |
+| ------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Tube Only**             | [🚇 Tube](https://tfl-status.cynexia.com/?mode=tube)                                                   |
+| **Elizabeth Line Only**   | [🚆 Elizabeth Line](https://tfl-status.cynexia.com/?mode=elizabeth-line)                               |
+| **Tube + Elizabeth Line** | [🚇🚆 Combo 1](https://tfl-status.cynexia.com/?mode=tube,elizabeth-line)                               |
+| **Tube + Overground**     | [🚇🚞 Combo 2](https://tfl-status.cynexia.com/?mode=tube,overground)                                   |
+| **All Modes**             | [🌐 All Modes](https://tfl-status.cynexia.com/?mode=tube,elizabeth-line,overground)                    |
+| **All Modes + Names**     | [🌐 All Modes + Names](https://tfl-status.cynexia.com/?mode=tube,elizabeth-line,overground&names=true) |
 
 Click on the live links to explore different configurations and find the one that suits you the best!
 
@@ -60,11 +60,11 @@ Combine parameters like this: `?mode=tube&names=true`
 
 Understand how the `names` parameter changes the display when there are disruptions or no disruptions:
 
-| Scenario                 | `names=true`                      | `names=false`                     |
-|--------------------------|-----------------------------------|----------------------------------|
-| **No Disruptions**       | Shows "Good service on all lines". | Shows "Good service on all lines". |
-| **Some Disruptions**     | Shows disrupted lines with their names, followed by "Good service on all other lines."| Shows only the colours of disrupted lines.  |
-| **All Lines Disrupted**  | Shows all lines with disruptions and their names. | Shows only the colours of all disrupted lines. |
+| Scenario                | `names=true`                                                                           | `names=false`                                  |
+| ----------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| **No Disruptions**      | Shows "Good service on all lines".                                                     | Shows "Good service on all lines".             |
+| **Some Disruptions**    | Shows disrupted lines with their names, followed by "Good service on all other lines." | Shows only the colours of disrupted lines.     |
+| **All Lines Disrupted** | Shows all lines with disruptions and their names.                                      | Shows only the colours of all disrupted lines. |
 
 ## Development 🛠️
 
@@ -103,6 +103,7 @@ The application is built with vanilla JavaScript for maximum compatibility and m
 ### Testing
 
 Tests use Jest with jsdom environment:
+
 - **Coverage target**: >90% for all metrics
 - **Environment detection**: Handles both Node.js and browser environments
 - **API mocking**: Mocks fetch and setTimeout for reliable testing
@@ -111,6 +112,7 @@ Tests use Jest with jsdom environment:
 ### API Integration
 
 The app calls the [TfL Unified API](https://api-portal.tfl.gov.uk/) directly:
+
 - **Endpoint**: `https://api.tfl.gov.uk/Line/Mode/{modes}/Status`
 - **Caching**: Respects Cache-Control headers for intelligent refreshing
 - **Error handling**: Graceful degradation when API is unavailable
@@ -147,6 +149,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 #### Status Not Updating
 
 The app automatically refreshes based on TfL API Cache-Control headers (typically 5 minutes):
+
 - **Manual refresh**: Reload the page
 - **Check cache**: Look for "cache_ttl" in browser console logs
 - **Development mode**: Console logs appear when hostname is localhost/127.0.0.1/0.0.0.0
@@ -154,6 +157,7 @@ The app automatically refreshes based on TfL API Cache-Control headers (typicall
 #### URL Parameters Not Working
 
 Ensure proper URL format:
+
 - ✅ Correct: `?mode=tube&names=true`
 - ❌ Incorrect: `?mode = tube & names = true`
 
@@ -162,6 +166,7 @@ Valid modes include: `tube`, `elizabeth-line`, `dlr`, `overground`, `tram`, `riv
 #### Embedding in Dashboards
 
 For embedding in home automation dashboards:
+
 1. Use the hosted version: `https://tfl-status.cynexia.com/`
 2. Add your preferred parameters: `?mode=tube,elizabeth-line&names=true`
 3. Frame or embed the URL in your dashboard
