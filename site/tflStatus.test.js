@@ -306,9 +306,9 @@ describe('setTimeout tests with fake timers', () => {
   it('should execute callback after 1 second', () => {
     const callback = jest.fn();
     setTimeout(callback, 1000);
-    expect(callback).not.toBeCalled();
+    expect(callback).not.toHaveBeenCalled();
     jest.runAllTimers();
-    expect(callback).toBeCalled();
+    expect(callback).toHaveBeenCalled();
     expect(callback).toHaveBeenCalledTimes(1);
   });
 
@@ -316,9 +316,9 @@ describe('setTimeout tests with fake timers', () => {
     const callback = jest.fn();
     const cache_ttl = 300;
     setTimeout(callback, cache_ttl * 1000);
-    expect(callback).not.toBeCalled();
+    expect(callback).not.toHaveBeenCalled();
     jest.runAllTimers();
-    expect(callback).toBeCalled();
+    expect(callback).toHaveBeenCalled();
     expect(callback).toHaveBeenCalledTimes(1);
   });
 
@@ -535,9 +535,108 @@ describe('fetchTfLStatus', () => {
 });
 
 
-describe('printUsageInstructions', () => {
-  const { printUsageInstructions } = require('./tflStatus');
+describe('isDevelopmentEnvironment', () => {
+  const { isDevelopmentEnvironment } = require('./tflStatus');
 
+  it('should return true when NODE_ENV is development', () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    expect(isDevelopmentEnvironment()).toBe(true);
+
+    // Restore original value
+    process.env.NODE_ENV = originalNodeEnv;
+  });
+
+  it('should return false in non-development environments', () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'test';
+
+    expect(isDevelopmentEnvironment()).toBe(false);
+
+    // Restore original value
+    process.env.NODE_ENV = originalNodeEnv;
+  });
+
+  it('should return true for localhost hostname', () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    const originalLocation = window.location;
+
+    process.env.NODE_ENV = 'test'; // Not development
+
+    // Mock the entire location object
+    delete window.location;
+    window.location = {
+      ...originalLocation,
+      hostname: 'localhost'
+    };
+
+    expect(isDevelopmentEnvironment()).toBe(true);
+
+    // Restore original values
+    process.env.NODE_ENV = originalNodeEnv;
+    window.location = originalLocation;
+  });
+
+  it('should return true for 127.0.0.1 hostname', () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    const originalLocation = window.location;
+
+    process.env.NODE_ENV = 'test'; // Not development
+
+    delete window.location;
+    window.location = {
+      ...originalLocation,
+      hostname: '127.0.0.1'
+    };
+
+    expect(isDevelopmentEnvironment()).toBe(true);
+
+    // Restore original values
+    process.env.NODE_ENV = originalNodeEnv;
+    window.location = originalLocation;
+  });
+
+  it('should return true for 0.0.0.0 hostname', () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    const originalLocation = window.location;
+
+    process.env.NODE_ENV = 'test'; // Not development
+
+    delete window.location;
+    window.location = {
+      ...originalLocation,
+      hostname: '0.0.0.0'
+    };
+
+    expect(isDevelopmentEnvironment()).toBe(true);
+
+    // Restore original values
+    process.env.NODE_ENV = originalNodeEnv;
+    window.location = originalLocation;
+  });
+
+  it('should return false for production hostname', () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    const originalLocation = window.location;
+
+    process.env.NODE_ENV = 'test'; // Not development
+
+    delete window.location;
+    window.location = {
+      ...originalLocation,
+      hostname: 'production.example.com'
+    };
+
+    expect(isDevelopmentEnvironment()).toBe(false);
+
+    // Restore original values
+    process.env.NODE_ENV = originalNodeEnv;
+    window.location = originalLocation;
+  });
+});
+
+describe('printUsageInstructions', () => {
   let consoleLogMock;
 
   beforeAll(() => {
@@ -560,7 +659,9 @@ describe('printUsageInstructions', () => {
     const originalNodeEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'development';
 
-    printUsageInstructions();
+    jest.resetModules();
+    const tflStatus = require('./tflStatus');
+    tflStatus.printUsageInstructions();
 
     expect(consoleLogMock.mock.calls.length).toBeGreaterThanOrEqual(2);
     expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Super simple TfL status');
@@ -570,17 +671,72 @@ describe('printUsageInstructions', () => {
     process.env.NODE_ENV = originalNodeEnv;
   });
 
-  it('should not print usage instructions in non-development mode', () => {
-    // Ensure NODE_ENV is not development
+  it('should print usage instructions when running on localhost', () => {
     const originalNodeEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'test';
+    const originalLocation = window.location;
 
-    printUsageInstructions();
+    process.env.NODE_ENV = 'test'; // Not development
+
+    delete window.location;
+    window.location = {
+      ...originalLocation,
+      hostname: 'localhost'
+    };
+
+    jest.resetModules();
+    const tflStatus = require('./tflStatus');
+    tflStatus.printUsageInstructions();
+
+    expect(consoleLogMock.mock.calls.length).toBeGreaterThanOrEqual(2);
+    expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Super simple TfL status');
+
+    // Restore original values
+    process.env.NODE_ENV = originalNodeEnv;
+    window.location = originalLocation;
+  });
+
+  it('should print usage instructions when running on 127.0.0.1', () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    const originalLocation = window.location;
+
+    process.env.NODE_ENV = 'test'; // Not development
+
+    delete window.location;
+    window.location = {
+      ...originalLocation,
+      hostname: '127.0.0.1'
+    };
+
+    jest.resetModules();
+    const tflStatus = require('./tflStatus');
+    tflStatus.printUsageInstructions();
+
+    expect(consoleLogMock.mock.calls.length).toBeGreaterThanOrEqual(2);
+    expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Super simple TfL status');
+
+    // Restore original values
+    process.env.NODE_ENV = originalNodeEnv;
+    window.location = originalLocation;
+  });
+
+  it('should not print usage instructions in non-development mode', () => {
+    // Ensure NODE_ENV is not development and not localhost
+    const originalNodeEnv = process.env.NODE_ENV;
+    const originalWindow = global.window;
+
+    process.env.NODE_ENV = 'test';
+    // Safely disable window to ensure no localhost detection
+    global.window = undefined;
+
+    jest.resetModules();
+    const tflStatus = require('./tflStatus');
+    tflStatus.printUsageInstructions();
 
     expect(consoleLogMock.mock.calls.length).toBe(0);
 
-    // Restore original NODE_ENV
+    // Restore original values
     process.env.NODE_ENV = originalNodeEnv;
+    global.window = originalWindow;
   });
 });
 
