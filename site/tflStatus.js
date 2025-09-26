@@ -201,7 +201,11 @@ const scheduleCacheRefresh = () => {
 
 const printUsageInstructions = () => {
   // Print usage instructions only in debug mode
-  if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') {
+  // Check for development environment with browser-safe fallback
+  const isDevelopment = (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') ||
+                       (typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost');
+
+  if (isDevelopment) {
     console.log('Super simple TfL status');
     console.log('from https://github.com/mnbf9rca/super_simple_tfl_status')
     console.log('Usage Instructions:');
@@ -224,7 +228,11 @@ const init = () => {
 };
 
 // Auto-initialize if in browser environment (not in tests)
-if (typeof window !== 'undefined' && typeof document !== 'undefined' && typeof jest === 'undefined') {
+if (
+  typeof window !== 'undefined' &&
+  typeof document !== 'undefined' &&
+  !(typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'test')
+) {
   init();
 }
 

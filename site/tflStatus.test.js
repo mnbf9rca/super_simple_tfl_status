@@ -570,17 +570,45 @@ describe('printUsageInstructions', () => {
     process.env.NODE_ENV = originalNodeEnv;
   });
 
-  it('should not print usage instructions in non-development mode', () => {
-    // Ensure NODE_ENV is not development
+  it('should print usage instructions when running on localhost', () => {
+    // Mock window.location for localhost detection
+    const originalWindow = global.window;
+    global.window = {
+      location: {
+        hostname: 'localhost'
+      }
+    };
+
+    // Ensure NODE_ENV is not development to test localhost fallback
     const originalNodeEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'test';
 
     printUsageInstructions();
 
+    expect(consoleLogMock.mock.calls.length).toBeGreaterThanOrEqual(2);
+    expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Super simple TfL status');
+
+    // Restore original values
+    global.window = originalWindow;
+    process.env.NODE_ENV = originalNodeEnv;
+  });
+
+  it('should not print usage instructions in non-development mode', () => {
+    // Ensure NODE_ENV is not development and not localhost
+    const originalNodeEnv = process.env.NODE_ENV;
+    const originalWindow = global.window;
+
+    process.env.NODE_ENV = 'test';
+    // Completely remove window to ensure no localhost detection
+    delete global.window;
+
+    printUsageInstructions();
+
     expect(consoleLogMock.mock.calls.length).toBe(0);
 
-    // Restore original NODE_ENV
+    // Restore original values
     process.env.NODE_ENV = originalNodeEnv;
+    global.window = originalWindow;
   });
 });
 
