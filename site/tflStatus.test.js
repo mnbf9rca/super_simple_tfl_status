@@ -57,7 +57,7 @@ describe('getModesFromURL', () => {
   test('should handle spaces in the "mode" parameter and return the input', () => {
     const urlParams = new URLSearchParams('mode= tube , dlr ');
     const result = getModesFromURL(urlParams);
-    expect(result).toBe('tube , dlr'); // Modes with spaces trimmed
+    expect(result).toBe('tube,dlr'); // Modes with spaces normalized
   });
 
   test('should handle unexpected characters in the "mode" parameter and return the value as-is', () => {
@@ -88,7 +88,7 @@ describe('getModesFromURL', () => {
       'mode= tube , dlr &otherParam=someValue'
     );
     const result = getModesFromURL(urlParams);
-    expect(result).toBe('tube , dlr'); // Modes with spaces trimmed
+    expect(result).toBe('tube,dlr'); // Modes with spaces normalized
   });
 
   test('should handle unexpected characters in the "mode" parameter with other params', () => {
@@ -143,6 +143,12 @@ describe('shouldShowNames', () => {
     const urlParams = new URLSearchParams('names=somevalue');
     const result = shouldShowNames(urlParams);
     expect(result).toBe(false);
+  });
+
+  test('should return true for case-insensitive "true" values', () => {
+    expect(shouldShowNames(new URLSearchParams('names=TRUE'))).toBe(true);
+    expect(shouldShowNames(new URLSearchParams('names=True'))).toBe(true);
+    expect(shouldShowNames(new URLSearchParams('names=tRuE'))).toBe(true);
   });
 });
 

@@ -64,7 +64,16 @@ const initStyles = () => {
   document.head.appendChild(style);
 };
 
-// Function to extract max-age from Cache-Control header
+/**
+ * Extracts the max-age value from a Cache-Control header string.
+ * Used to determine how long to cache TfL API responses.
+ *
+ * @param {string|null} cacheControlHeader - The Cache-Control header value
+ * @returns {number|null} The max-age value in seconds, or null if not found/invalid
+ * @example
+ * extractMaxAge("max-age=300, public") // returns 300
+ * extractMaxAge("no-cache") // returns null
+ */
 const extractMaxAge = (cacheControlHeader) => {
   if (!cacheControlHeader) return null;
 
@@ -81,18 +90,53 @@ const extractMaxAge = (cacheControlHeader) => {
   return null;
 };
 
-// Function to get modes from URL
+/**
+ * Extracts transportation modes from URL parameters.
+ * Defaults to 'tube,elizabeth-line' if no mode parameter is provided.
+ *
+ * @param {URLSearchParams} urlParams - URL search parameters object
+ * @returns {string} Comma-separated list of transportation modes
+ * @example
+ * getModesFromURL(new URLSearchParams("?mode=tube,dlr")) // returns "tube,dlr"
+ * getModesFromURL(new URLSearchParams("")) // returns "tube,elizabeth-line"
+ */
 const getModesFromURL = (urlParams) => {
   const mode = urlParams.get('mode');
-  return mode ? mode.trim() : 'tube,elizabeth-line';
+  if (!mode) return 'tube,elizabeth-line';
+  return mode
+    .split(',')
+    .map(m => m.trim())
+    .filter(Boolean)
+    .join(',');
 };
 
-// Function to check if names should be shown
+/**
+ * Determines whether line names should be displayed based on URL parameters.
+ * Returns true only if 'names=true' is explicitly set.
+ *
+ * @param {URLSearchParams} urlParams - URL search parameters object
+ * @returns {boolean} True if names should be shown, false otherwise
+ * @example
+ * shouldShowNames(new URLSearchParams("?names=true")) // returns true
+ * shouldShowNames(new URLSearchParams("?names=false")) // returns false
+ */
 const shouldShowNames = (urlParams) => {
-  return urlParams.get('names') === 'true';
+  const namesParam = urlParams.get('names');
+  return !!(namesParam && namesParam.toLowerCase() === 'true');
 };
 
-// Function to extract line statuses
+/**
+ * Processes TfL API response data to identify disrupted lines and their status.
+ * Determines which lines have disruptions (severity < 10) and formats them for display.
+ *
+ * @param {Array} data - Array of line objects from TfL API
+ * @param {boolean} showNames - Whether to include line names in output
+ * @returns {{allOtherLinesGood: boolean, disruptedLines: Array<{message: string, bgColour: string, striped: boolean}>}} Processing results
+ * @example
+ * const result = extractLineStatuses(apiData, true);
+ * // result.allOtherLinesGood = false
+ * // result.disruptedLines = [{message: "Central", bgColour: "#E1251B", striped: false}]
+ */
 const extractLineStatuses = (data, showNames) => {
   let allOtherLinesGood = true;
   const disruptedLines = [];
@@ -130,7 +174,17 @@ const clearAndRender = (statuses, renderFunction = renderStatusBlocks) => {
   renderFunction(statuses);
 };
 
-// Function to fetch TfL status
+/**
+ * Fetches live status data from TfL API and renders it on the page.
+ * Handles caching, error scenarios, and automatic refresh scheduling.
+ *
+ * @param {string} modes - Comma-separated list of transport modes (e.g., "tube,elizabeth-line")
+ * @param {boolean} showNames - Whether to display line names in the status blocks
+ * @returns {Promise<Array<{message: string, bgColour: string, striped?: boolean}>>} Array of status objects that were rendered
+ * @example
+ * const statuses = await fetchTfLStatus("tube,dlr", true);
+ * // Returns: [{message: "Good service on all lines", bgColour: "#004A9C"}]
+ */
 const fetchTfLStatus = async (modes, showNames) => {
   try {
     const response = await fetch(
@@ -211,7 +265,21 @@ const scheduleCacheRefresh = () => {
   }, cache_ttl * 1000);
 };
 
-// Helper function to detect if we're in a development environment
+/**
+ * Detects if the application is running in a development environment.
+ * Checks NODE_ENV first, then falls back to hostname detection for browsers.
+ *
+ * @returns {boolean} True if in development environment, false otherwise
+ * @example
+ * // In Node.js with NODE_ENV=development
+ * isDevelopmentEnvironment() // returns true
+ *
+ * // In browser on localhost
+ * isDevelopmentEnvironment() // returns true
+ *
+ * // In browser on production domain
+ * isDevelopmentEnvironment() // returns false
+ */
 const isDevelopmentEnvironment = () => {
   // Check NODE_ENV first (Node.js environments)
   if (
@@ -259,7 +327,15 @@ const printUsageInstructions = () => {
   }
 };
 
-// Initialize the application
+/**
+ * Initializes the TfL Status application.
+ * Sets up styles, prints usage instructions in development, fetches initial status, and schedules refresh.
+ * This is the main entry point when the application loads in a browser.
+ *
+ * @example
+ * // Automatically called when page loads (if not in test environment)
+ * init();
+ */
 const init = () => {
   initStyles();
   printUsageInstructions();
