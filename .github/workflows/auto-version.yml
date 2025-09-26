@@ -1,31 +1,17 @@
 name: Auto Version & Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      version_type:
-        description: 'Version bump type'
-        required: true
-        default: 'patch'
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
   push:
-    branches: [ "main" ]
-    paths-ignore:
-      - 'README.md'
-      - 'CONTRIBUTING.md'
-      - 'docs/**'
-      - '.github/**'
+    branches: [main]
 
 permissions:
   contents: write
+  id-token: write
+  attestations: write
 
 jobs:
-  auto-version:
-    name: Auto Version and Release
+  release:
+    name: Create Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -43,31 +29,24 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm run test
+      - name: Run quality checks
+        run: npm run quality
 
       - name: Determine version bump type
         id: version_type
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "type=${{ github.event.inputs.version_type }}" >> $GITHUB_OUTPUT
+          # Get the last commit message
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+
+          # Check for breaking changes or major updates
+          if echo "$COMMIT_MSG" | grep -qE "(BREAKING|major:|feat!:|fix!:)"; then
+            echo "type=major" >> $GITHUB_OUTPUT
+          # Check for new features
+          elif echo "$COMMIT_MSG" | grep -qE "(feat:|feature:)"; then
+            echo "type=minor" >> $GITHUB_OUTPUT
+          # Default to patch for everything else (including deps, fixes, chores)
           else
-            # Auto-determine based on commit messages since last tag
-            LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-
-            # Get commit messages since last tag
-            COMMITS=$(git log $LAST_TAG..HEAD --pretty=format:"%s" 2>/dev/null || git log --pretty=format:"%s")
-
-            # Check for breaking changes or major updates
-            if echo "$COMMITS" | grep -qE "(BREAKING|major:|feat!:|fix!:)"; then
-              echo "type=major" >> $GITHUB_OUTPUT
-            # Check for new features
-            elif echo "$COMMITS" | grep -qE "(feat:|feature:|add:|new:)"; then
-              echo "type=minor" >> $GITHUB_OUTPUT
-            # Default to patch for fixes, chores, etc.
-            else
-              echo "type=patch" >> $GITHUB_OUTPUT
-            fi
+            echo "type=patch" >> $GITHUB_OUTPUT
           fi
 
       - name: Get current version
@@ -106,6 +85,19 @@ jobs:
             echo EOF
           } >> $GITHUB_OUTPUT
 
+      - name: Create deployment bundle
+        run: |
+          mkdir -p dist
+          cp -r site/* dist/
+          cp package.json dist/
+          cp README.md dist/
+          tar -czf tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz dist/
+
+      - name: Generate build provenance attestation
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz
+
       - name: Commit version bump
         run: |
           git config --local user.email "action@github.com"
@@ -119,16 +111,8 @@ jobs:
           git push origin main
           git push origin ${{ steps.bump_version.outputs.tag }}
 
-      - name: Create deployment artifact
-        run: |
-          # Create a deployment package
-          mkdir -p dist
-          cp -r site/* dist/
-          cp package.json dist/
-          cp README.md dist/
-          tar -czf super-simple-tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz -C dist .
-
       - name: Create Release
+        id: create_release
         uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e # v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -138,14 +122,28 @@ jobs:
           body: |
             ## Auto-generated Release ${{ steps.bump_version.outputs.tag }}
 
-            **Version bump type:** ${{ steps.version_type.outputs.type }}
-            **Previous version:** ${{ steps.current_version.outputs.version }}
+            **Version bump:** ${{ steps.version_type.outputs.type }} (v${{ steps.current_version.outputs.version }} → v${{ steps.bump_version.outputs.version }})
 
             ${{ steps.changelog.outputs.changelog }}
 
-            ### Download
-            - [Source code (zip)](https://github.com/${{ github.repository }}/archive/${{ steps.bump_version.outputs.tag }}.zip)
-            - [Source code (tar.gz)](https://github.com/${{ github.repository }}/archive/${{ steps.bump_version.outputs.tag }}.tar.gz)
-            - [Deployment package](https://github.com/${{ github.repository }}/releases/download/${{ steps.bump_version.outputs.tag }}/super-simple-tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz)
+            ### Verification
+            The deployment bundle includes a signed attestation for supply chain security:
+            ```bash
+            gh attestation verify tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz -o ${{ github.repository_owner }}
+            ```
+
+            ### Downloads
+            - **Deployment bundle**: [tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz](https://github.com/${{ github.repository }}/releases/download/${{ steps.bump_version.outputs.tag }}/tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz) (signed)
+            - Source code: [zip](https://github.com/${{ github.repository }}/archive/${{ steps.bump_version.outputs.tag }}.zip) | [tar.gz](https://github.com/${{ github.repository }}/archive/${{ steps.bump_version.outputs.tag }}.tar.gz)
           draft: false
-          prerelease: ${{ contains(steps.bump_version.outputs.tag, '-') }}
+          prerelease: false
+
+      - name: Upload deployment bundle
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5 # v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz
+          asset_name: tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz
+          asset_content_type: application/gzip

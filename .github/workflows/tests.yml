@@ -25,8 +25,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests with coverage
-        run: npm run test
+      - name: Run quality checks
+        run: npm run quality
+
       - name: Upload coverage reports to Codecov
         if: matrix.node-version == 24
         uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5
