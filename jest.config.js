@@ -1,8 +1,8 @@
 module.exports = {
   clearMocks: true,
-  testEnvironment: 'jsdom',
+  testEnvironment: 'jest-environment-jsdom',
   testEnvironmentOptions: {
-    url: 'https://example.com'
+    url: 'https://test.example.com'
   },
   testMatch: ['<rootDir>/site/**/?(*.)+(spec|test).js'],
 };
