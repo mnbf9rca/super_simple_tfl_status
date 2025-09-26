@@ -199,13 +199,27 @@ const scheduleCacheRefresh = () => {
   }, cache_ttl * 1000);
 };
 
+// Helper function to detect if we're in a development environment
+const isDevelopmentEnvironment = () => {
+  // Check NODE_ENV first (Node.js environments)
+  if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
+    return true;
+  }
+
+  // Fallback to hostname check for browser environments
+  if (typeof window !== 'undefined' && window.location && window.location.hostname) {
+    const devHosts = ['localhost', '127.0.0.1', '0.0.0.0'];
+    const hostname = window.location.hostname;
+    // Only return true if hostname is explicitly in the dev hosts list and not empty
+    return hostname.length > 0 && devHosts.includes(hostname);
+  }
+
+  return false;
+};
+
 const printUsageInstructions = () => {
   // Print usage instructions only in debug mode
-  // Check for development environment with browser-safe fallback
-  const isDevelopment = (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') ||
-                       (typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost');
-
-  if (isDevelopment) {
+  if (isDevelopmentEnvironment()) {
     console.log('Super simple TfL status');
     console.log('from https://github.com/mnbf9rca/super_simple_tfl_status')
     console.log('Usage Instructions:');
@@ -249,6 +263,7 @@ if (typeof module !== 'undefined') {
     renderStatusBlocks,
     setTimeout,
     printUsageInstructions,
+    isDevelopmentEnvironment,
     init,
     initStyles,
     scheduleCacheRefresh,

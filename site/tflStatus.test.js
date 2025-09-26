@@ -535,9 +535,128 @@ describe('fetchTfLStatus', () => {
 });
 
 
-describe('printUsageInstructions', () => {
-  const { printUsageInstructions } = require('./tflStatus');
+describe('isDevelopmentEnvironment', () => {
 
+  it('should return true when NODE_ENV is development', () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    const originalWindow = global.window;
+
+    // Set environment BEFORE requiring module
+    process.env.NODE_ENV = 'development';
+    global.window = undefined; // Remove window to test NODE_ENV path
+
+    jest.resetModules();
+    const tflStatus = require('./tflStatus');
+    expect(tflStatus.isDevelopmentEnvironment()).toBe(true);
+
+    // Restore original values
+    process.env.NODE_ENV = originalNodeEnv;
+    global.window = originalWindow;
+  });
+
+  it('should return true when hostname is localhost', () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    const originalWindow = global.window;
+
+    // Set environment BEFORE requiring module
+    process.env.NODE_ENV = 'test';
+    global.window = {
+      location: {
+        hostname: 'localhost'
+      }
+    };
+
+    jest.resetModules();
+    const tflStatus = require('./tflStatus');
+    expect(tflStatus.isDevelopmentEnvironment()).toBe(true);
+
+    // Restore original values
+    process.env.NODE_ENV = originalNodeEnv;
+    global.window = originalWindow;
+  });
+
+  it('should return true when hostname is 127.0.0.1', () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    const originalWindow = global.window;
+
+    // Set environment BEFORE requiring module
+    process.env.NODE_ENV = 'test';
+    global.window = {
+      location: {
+        hostname: '127.0.0.1'
+      }
+    };
+
+    jest.resetModules();
+    const tflStatus = require('./tflStatus');
+    expect(tflStatus.isDevelopmentEnvironment()).toBe(true);
+
+    // Restore original values
+    process.env.NODE_ENV = originalNodeEnv;
+    global.window = originalWindow;
+  });
+
+  it('should return true when hostname is 0.0.0.0', () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    const originalWindow = global.window;
+
+    // Set environment BEFORE requiring module
+    process.env.NODE_ENV = 'test';
+    global.window = {
+      location: {
+        hostname: '0.0.0.0'
+      }
+    };
+
+    jest.resetModules();
+    const tflStatus = require('./tflStatus');
+    expect(tflStatus.isDevelopmentEnvironment()).toBe(true);
+
+    // Restore original values
+    process.env.NODE_ENV = originalNodeEnv;
+    global.window = originalWindow;
+  });
+
+  it('should return false in non-development environments', () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    const originalWindow = global.window;
+
+    // Set environment BEFORE requiring module
+    process.env.NODE_ENV = 'test';
+    global.window = {
+      location: {
+        hostname: 'example.com'
+      }
+    };
+
+    jest.resetModules();
+    const tflStatus = require('./tflStatus');
+    expect(tflStatus.isDevelopmentEnvironment()).toBe(false);
+
+    // Restore original values
+    process.env.NODE_ENV = originalNodeEnv;
+    global.window = originalWindow;
+  });
+
+  it('should return false when window is undefined', () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    const originalWindow = global.window;
+
+    // Set environment BEFORE requiring module
+    process.env.NODE_ENV = 'test';
+    global.window = undefined;
+
+    jest.resetModules();
+    const tflStatus = require('./tflStatus');
+    expect(tflStatus.isDevelopmentEnvironment()).toBe(false);
+
+    // Restore original values
+    process.env.NODE_ENV = originalNodeEnv;
+    global.window = originalWindow;
+  });
+});
+
+describe('printUsageInstructions', () => {
   let consoleLogMock;
 
   beforeAll(() => {
@@ -560,7 +679,9 @@ describe('printUsageInstructions', () => {
     const originalNodeEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'development';
 
-    printUsageInstructions();
+    jest.resetModules();
+    const tflStatus = require('./tflStatus');
+    tflStatus.printUsageInstructions();
 
     expect(consoleLogMock.mock.calls.length).toBeGreaterThanOrEqual(2);
     expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Super simple TfL status');
@@ -583,7 +704,34 @@ describe('printUsageInstructions', () => {
     const originalNodeEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'test';
 
-    printUsageInstructions();
+    jest.resetModules();
+    const tflStatus = require('./tflStatus');
+    tflStatus.printUsageInstructions();
+
+    expect(consoleLogMock.mock.calls.length).toBeGreaterThanOrEqual(2);
+    expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Super simple TfL status');
+
+    // Restore original values
+    global.window = originalWindow;
+    process.env.NODE_ENV = originalNodeEnv;
+  });
+
+  it('should print usage instructions when running on 127.0.0.1', () => {
+    // Mock window.location for 127.0.0.1 detection
+    const originalWindow = global.window;
+    global.window = {
+      location: {
+        hostname: '127.0.0.1'
+      }
+    };
+
+    // Ensure NODE_ENV is not development to test IP fallback
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'test';
+
+    jest.resetModules();
+    const tflStatus = require('./tflStatus');
+    tflStatus.printUsageInstructions();
 
     expect(consoleLogMock.mock.calls.length).toBeGreaterThanOrEqual(2);
     expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Super simple TfL status');
@@ -599,10 +747,12 @@ describe('printUsageInstructions', () => {
     const originalWindow = global.window;
 
     process.env.NODE_ENV = 'test';
-    // Completely remove window to ensure no localhost detection
-    delete global.window;
+    // Safely disable window to ensure no localhost detection
+    global.window = undefined;
 
-    printUsageInstructions();
+    jest.resetModules();
+    const tflStatus = require('./tflStatus');
+    tflStatus.printUsageInstructions();
 
     expect(consoleLogMock.mock.calls.length).toBe(0);
 
