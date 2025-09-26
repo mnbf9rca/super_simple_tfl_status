@@ -4,7 +4,12 @@
   "description": "Real-time TfL service status in a minimalist design",
   "main": "index.js",
   "scripts": {
-    "test": "jest --config jest.config.js --coverage"
+    "test": "jest --config jest.config.js --coverage",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "quality": "npm run format:check && npm run lint && npm run test"
   },
   "keywords": [
     "tfl",
@@ -25,12 +30,17 @@
     "url": "https://github.com/mnbf9rca/super_simple_tfl_status/issues"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=22"
   },
   "devDependencies": {
+    "eslint": "^9.12.0",
+    "@eslint/js": "^9.12.0",
+    "eslint-plugin-jest": "^28.8.3",
+    "eslint-config-prettier": "^9.1.0",
     "jest": "^30.1.3",
     "jest-date-mock": "1.0.10",
     "jest-environment-jsdom": "^30.1.2",
-    "jsdom": "27.0.0"
+    "jsdom": "27.0.0",
+    "prettier": "^3.3.3"
   }
 }

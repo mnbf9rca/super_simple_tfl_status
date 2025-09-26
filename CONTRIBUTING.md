@@ -22,17 +22,20 @@ Thank you for your interest in contributing to Super Simple TfL Status! This doc
 ### Getting Started
 
 1. **Fork and clone the repository**
+
    ```bash
    git clone https://github.com/your-username/super_simple_tfl_status.git
    cd super_simple_tfl_status
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Run tests to verify setup**
+
    ```bash
    npm test
    ```
@@ -63,6 +66,7 @@ This project uses automated code formatting and linting:
 ### EditorConfig
 
 The project includes `.editorconfig` for consistent formatting across editors:
+
 - 2-space indentation for JavaScript/JSON
 - UTF-8 encoding
 - LF line endings
@@ -99,6 +103,7 @@ npm test -- --watch
 ### Environment Detection Testing
 
 When testing environment detection:
+
 ```javascript
 // Safely mock window.location
 const originalLocation = window.location;
@@ -116,11 +121,13 @@ window.location = originalLocation;
 ### Before Submitting
 
 1. **Ensure all tests pass**
+
    ```bash
    npm test
    ```
 
 2. **Check code style**
+
    ```bash
    npm run lint
    npm run format:check
@@ -131,11 +138,13 @@ window.location = originalLocation;
 ### PR Guidelines
 
 1. **Create a feature branch**
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
 
 2. **Write clear commit messages**
+
    ```
    feat: add support for bus status display
 
@@ -153,6 +162,7 @@ window.location = originalLocation;
 ### Commit Message Format
 
 Use conventional commits format:
+
 - `feat:` for new features
 - `fix:` for bug fixes
 - `docs:` for documentation changes
@@ -194,11 +204,13 @@ super_simple_tfl_status/
 #### Tests Failing Locally
 
 1. **Check Node.js version**
+
    ```bash
    node --version  # Should be 24.x
    ```
 
 2. **Clear npm cache**
+
    ```bash
    npm cache clean --force
    rm -rf node_modules package-lock.json
@@ -213,6 +225,7 @@ super_simple_tfl_status/
 #### Linting Errors
 
 1. **Auto-fix common issues**
+
    ```bash
    npm run lint -- --fix
    ```
@@ -222,6 +235,7 @@ super_simple_tfl_status/
 #### Environment Detection Issues
 
 When testing hostname-based detection, ensure:
+
 - Use `delete window.location` followed by reassignment
 - Restore original location in `afterEach`
 - Set `process.env.NODE_ENV = 'test'` in tests

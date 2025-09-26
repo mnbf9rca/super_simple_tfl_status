@@ -17,6 +17,7 @@ module.exports = [
         fetch: 'readonly',
         setTimeout: 'readonly',
         URLSearchParams: 'readonly',
+        HTMLStyleElement: 'readonly',
 
         // Node.js globals for module exports
         module: 'readonly',
@@ -64,5 +65,8 @@ module.exports = [
       // Style rules managed by prettier
       ...prettier.rules
     }
+  },
+  {
+    ignores: ['coverage/', '**/*.html']
   }
 ];

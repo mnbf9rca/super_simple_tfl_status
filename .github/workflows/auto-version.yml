@@ -1,0 +1,149 @@
+name: Auto Version & Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run quality checks
+        run: npm run quality
+
+      - name: Determine version bump type
+        id: version_type
+        run: |
+          # Get the last commit message
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+
+          # Check for breaking changes or major updates
+          if echo "$COMMIT_MSG" | grep -qE "(BREAKING|major:|feat!:|fix!:)"; then
+            echo "type=major" >> $GITHUB_OUTPUT
+          # Check for new features
+          elif echo "$COMMIT_MSG" | grep -qE "(feat:|feature:)"; then
+            echo "type=minor" >> $GITHUB_OUTPUT
+          # Default to patch for everything else (including deps, fixes, chores)
+          else
+            echo "type=patch" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Get current version
+        id: current_version
+        run: |
+          CURRENT=$(node -p "require('./package.json').version")
+          echo "version=$CURRENT" >> $GITHUB_OUTPUT
+
+      - name: Bump version
+        id: bump_version
+        run: |
+          npm version ${{ steps.version_type.outputs.type }} --no-git-tag-version
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "tag=v$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get the previous tag
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+          # Generate changelog
+          if [ -n "$PREV_TAG" ]; then
+            echo "## Changes since $PREV_TAG" > CHANGELOG.md
+            git log --pretty=format:"- %s (%h)" $PREV_TAG..HEAD >> CHANGELOG.md
+          else
+            echo "## Initial Release" > CHANGELOG.md
+            echo "This is the first release of Super Simple TfL Status." >> CHANGELOG.md
+          fi
+
+          # Set multiline output
+          {
+            echo 'changelog<<EOF'
+            cat CHANGELOG.md
+            echo EOF
+          } >> $GITHUB_OUTPUT
+
+      - name: Create deployment bundle
+        run: |
+          mkdir -p dist
+          cp -r site/* dist/
+          cp package.json dist/
+          cp README.md dist/
+          tar -czf tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz dist/
+
+      - name: Generate build provenance attestation
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz
+
+      - name: Commit version bump
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add package.json
+          git commit -m "chore: bump version to ${{ steps.bump_version.outputs.version }}"
+
+      - name: Create and push tag
+        run: |
+          git tag ${{ steps.bump_version.outputs.tag }}
+          git push origin main
+          git push origin ${{ steps.bump_version.outputs.tag }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e # v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.bump_version.outputs.tag }}
+          release_name: Release ${{ steps.bump_version.outputs.tag }}
+          body: |
+            ## Auto-generated Release ${{ steps.bump_version.outputs.tag }}
+
+            **Version bump:** ${{ steps.version_type.outputs.type }} (v${{ steps.current_version.outputs.version }} → v${{ steps.bump_version.outputs.version }})
+
+            ${{ steps.changelog.outputs.changelog }}
+
+            ### Verification
+            The deployment bundle includes a signed attestation for supply chain security:
+            ```bash
+            gh attestation verify tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz -o ${{ github.repository_owner }}
+            ```
+
+            ### Downloads
+            - **Deployment bundle**: [tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz](https://github.com/${{ github.repository }}/releases/download/${{ steps.bump_version.outputs.tag }}/tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz) (signed)
+            - Source code: [zip](https://github.com/${{ github.repository }}/archive/${{ steps.bump_version.outputs.tag }}.zip) | [tar.gz](https://github.com/${{ github.repository }}/archive/${{ steps.bump_version.outputs.tag }}.tar.gz)
+          draft: false
+          prerelease: false
+
+      - name: Upload deployment bundle
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5 # v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz
+          asset_name: tfl-status-${{ steps.bump_version.outputs.tag }}.tar.gz
+          asset_content_type: application/gzip

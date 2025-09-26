@@ -4,5 +4,5 @@ module.exports = {
   testEnvironmentOptions: {
     url: 'https://test.example.com'
   },
-  testMatch: ['<rootDir>/site/**/?(*.)+(spec|test).js'],
+  testMatch: ['<rootDir>/site/**/?(*.)+(spec|test).js']
 };
