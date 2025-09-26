@@ -9,7 +9,6 @@
 // License: MIT
 // version 0.1.0
 
-
 // load test TfL data responses
 // no disruption
 const allOkResponse = require('../test_common_tfl_results/tfl_responses_all_ok.json');
@@ -17,7 +16,6 @@ const allOkResponse = require('../test_common_tfl_results/tfl_responses_all_ok.j
 const singleDisruptionResponse = require('../test_common_tfl_results/tfl_responses_single_disruption.json');
 // Central, Metropolitan, Piccadilly, Waterloo & City lines are disrupted
 const multipleDisruptionsResponse = require('../test_common_tfl_results/tfl_responses_multiple_disruptions.json');
-
 
 describe('extractMaxAge', () => {
   const { extractMaxAge } = require('./tflStatus');
@@ -79,31 +77,35 @@ describe('getModesFromURL', () => {
     const result = getModesFromURL(urlParams);
     expect(result).toBe('tube,elizabeth-line'); // Default modes
   });
-  test('should return modes from the URL when "mode" parameter is present', () => {
+  test('should return modes from the URL when "mode" parameter is present with other params', () => {
     const urlParams = new URLSearchParams('mode=tube,dlr&otherParam=someValue');
     const result = getModesFromURL(urlParams);
     expect(result).toBe('tube,dlr'); // Modes from the URL
   });
 
   test('should handle spaces in the "mode" parameter and return the input string', () => {
-    const urlParams = new URLSearchParams('mode= tube , dlr &otherParam=someValue');
+    const urlParams = new URLSearchParams(
+      'mode= tube , dlr &otherParam=someValue'
+    );
     const result = getModesFromURL(urlParams);
     expect(result).toBe('tube , dlr'); // Modes with spaces trimmed
   });
 
-  test('should handle unexpected characters in the "mode" parameter and return the value as-is', () => {
-    const urlParams = new URLSearchParams('mode=invalid_mode&otherParam=someValue');
+  test('should handle unexpected characters in the "mode" parameter with other params', () => {
+    const urlParams = new URLSearchParams(
+      'mode=invalid_mode&otherParam=someValue'
+    );
     const result = getModesFromURL(urlParams);
     expect(result).toBe('invalid_mode'); // Value as-is
   });
 
-  test('should handle empty "mode" parameter and return default modes', () => {
+  test('should handle empty "mode" parameter with other params and return default modes', () => {
     const urlParams = new URLSearchParams('mode=&otherParam=someValue');
     const result = getModesFromURL(urlParams);
     expect(result).toBe('tube,elizabeth-line'); // Default modes
   });
 
-  test('should return default modes when "mode" parameter is not in the URL', () => {
+  test('should return default modes when no "mode" parameter is provided', () => {
     const urlParams = new URLSearchParams('otherParam=someValue');
     const result = getModesFromURL(urlParams);
     expect(result).toBe('tube,elizabeth-line'); // Default modes
@@ -145,7 +147,6 @@ describe('shouldShowNames', () => {
 });
 
 describe('renderStatusBlocks', () => {
-
   const renderStatusBlocks = require('./tflStatus').renderStatusBlocks;
 
   // Reset the document body before each test
@@ -154,20 +155,26 @@ describe('renderStatusBlocks', () => {
   });
 
   test('should render a single status block correctly and set --total-blocks', () => {
-    const statuses = [{
-      message: 'Good service on all lines',
-      bgColour: '#004A9C',
-    }];
+    const statuses = [
+      {
+        message: 'Good service on all lines',
+        bgColour: '#004A9C'
+      }
+    ];
 
     renderStatusBlocks(statuses);
 
     const blocks = document.querySelectorAll('.status-block');
-    expect(blocks.length).toBe(1);
+    expect(blocks).toHaveLength(1);
     expect(blocks[0].textContent).toBe('Good service on all lines');
     expect(blocks[0].style.backgroundColor).toBe('rgb(0, 74, 156)');
 
     // Validate --total-blocks CSS property
-    expect(window.getComputedStyle(document.documentElement).getPropertyValue('--total-blocks')).toBe("1");
+    expect(
+      window
+        .getComputedStyle(document.documentElement)
+        .getPropertyValue('--total-blocks')
+    ).toBe('1');
   });
 
   test('should render multiple status blocks correctly and set --total-blocks', () => {
@@ -181,7 +188,7 @@ describe('renderStatusBlocks', () => {
     renderStatusBlocks(statuses);
 
     const blocks = document.querySelectorAll('.status-block');
-    expect(blocks.length).toBe(4);
+    expect(blocks).toHaveLength(4);
 
     // Validate first block
     expect(blocks[0].textContent).toBe('Good service on all lines');
@@ -205,23 +212,32 @@ describe('renderStatusBlocks', () => {
     expect(blocks[3].querySelector('.stripe')).not.toBeNull(); // striped
 
     // Validate --total-blocks CSS property
-    expect(window.getComputedStyle(document.documentElement).getPropertyValue('--total-blocks')).toBe("4");
+    expect(
+      window
+        .getComputedStyle(document.documentElement)
+        .getPropertyValue('--total-blocks')
+    ).toBe('4');
   });
 });
-
 
 describe('extractLineStatuses', () => {
   const extractLineStatuses = require('./tflStatus').extractLineStatuses;
 
   describe('when all lines are OK', () => {
     it('should return empty array for disruptedLines and allOtherLinesGood=true, with showNames=true', () => {
-      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(allOkResponse, true);
+      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(
+        allOkResponse,
+        true
+      );
       expect(allOtherLinesGood).toBe(true);
       expect(disruptedLines).toEqual([]);
     });
 
     it('should return empty array for disruptedLines and allOtherLinesGood=true, with showNames=false', () => {
-      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(allOkResponse, false);
+      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(
+        allOkResponse,
+        false
+      );
       expect(allOtherLinesGood).toBe(true);
       expect(disruptedLines).toEqual([]);
     });
@@ -229,45 +245,61 @@ describe('extractLineStatuses', () => {
 
   describe('when a single line is disrupted', () => {
     it('should identify the disrupted line, with showNames=true', () => {
-      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(singleDisruptionResponse, true);
+      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(
+        singleDisruptionResponse,
+        true
+      );
       expect(allOtherLinesGood).toBe(false);
-      expect(disruptedLines).toEqual([{ message: 'Waterloo & City', bgColour: '#6BCDB2', striped: false }]);
+      expect(disruptedLines).toEqual([
+        { message: 'Waterloo & City', bgColour: '#6BCDB2', striped: false }
+      ]);
     });
 
     it('should identify the disrupted line, with showNames=false', () => {
-      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(singleDisruptionResponse, false);
+      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(
+        singleDisruptionResponse,
+        false
+      );
       expect(allOtherLinesGood).toBe(false);
-      expect(disruptedLines).toEqual([{ message: '', bgColour: '#6BCDB2', striped: false }]);
+      expect(disruptedLines).toEqual([
+        { message: '', bgColour: '#6BCDB2', striped: false }
+      ]);
     });
   });
 
   describe('when multiple lines are disrupted', () => {
     it('should identify all disrupted lines, with showNames=true', () => {
-      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(multipleDisruptionsResponse, true);
+      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(
+        multipleDisruptionsResponse,
+        true
+      );
       expect(allOtherLinesGood).toBe(false);
       expect(disruptedLines).toEqual([
         { message: 'Central', bgColour: '#E1251B', striped: false },
         { message: 'Metropolitan', bgColour: '#870F54', striped: false },
         { message: 'Piccadilly', bgColour: '#000F9F', striped: false },
-        { message: 'Waterloo & City', bgColour: '#6BCDB2', striped: false },
+        { message: 'Waterloo & City', bgColour: '#6BCDB2', striped: false }
       ]);
     });
 
     it('should identify all disrupted lines, with showNames=false', () => {
-      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(multipleDisruptionsResponse, false);
+      const { allOtherLinesGood, disruptedLines } = extractLineStatuses(
+        multipleDisruptionsResponse,
+        false
+      );
       expect(allOtherLinesGood).toBe(false);
       expect(disruptedLines).toEqual([
         { message: '', bgColour: '#E1251B', striped: false },
         { message: '', bgColour: '#870F54', striped: false },
         { message: '', bgColour: '#000F9F', striped: false },
-        { message: '', bgColour: '#6BCDB2', striped: false },
+        { message: '', bgColour: '#6BCDB2', striped: false }
       ]);
     });
   });
 });
 
 describe('scheduleNextFetch', () => {
-  let scheduleNextFetch = require('./tflStatus').scheduleNextFetch;
+  const {scheduleNextFetch} = require('./tflStatus');
 
   beforeEach(() => {
     jest.spyOn(global, 'setTimeout');
@@ -287,14 +319,14 @@ describe('scheduleNextFetch', () => {
     scheduleNextFetch(maxAge);
 
     expect(global.setTimeout).toHaveBeenCalled();
-    expect(global.setTimeout).toHaveBeenCalledWith(expect.any(Function), maxAge * 1000);
+    expect(global.setTimeout).toHaveBeenCalledWith(
+      expect.any(Function),
+      maxAge * 1000
+    );
   });
-
-
 });
 
 describe('setTimeout tests with fake timers', () => {
-
   beforeAll(() => {
     jest.useFakeTimers();
   });
@@ -321,7 +353,6 @@ describe('setTimeout tests with fake timers', () => {
     expect(callback).toHaveBeenCalled();
     expect(callback).toHaveBeenCalledTimes(1);
   });
-
 });
 
 describe('clearAndRender', () => {
@@ -362,18 +393,15 @@ describe('clearAndRender', () => {
     const oldStatuses = document.querySelectorAll('.old-status');
     const newStatuses = document.querySelectorAll('.status-block');
 
-    expect(oldStatuses.length).toBe(0);
-    expect(newStatuses.length).toBe(1);
+    expect(oldStatuses).toHaveLength(0);
+    expect(newStatuses).toHaveLength(1);
     expect(newStatuses[0].textContent).toBe('New Status');
     expect(newStatuses[0].style.backgroundColor).toBe('rgb(0, 74, 156)');
   });
-
 });
 
 describe('fetchTfLStatus', () => {
   const fetchTfLStatus = require('./tflStatus').fetchTfLStatus;
-  const lineColors = require('./tflStatus').lineColors;
-
 
   beforeEach(() => {
     global.fetch = jest.fn();
@@ -385,12 +413,12 @@ describe('fetchTfLStatus', () => {
       status: 200,
       statusText: 'OK',
       headers: {
-        get: jest.fn().mockReturnValue('application/json'),
+        get: jest.fn().mockReturnValue('application/json')
       },
       json: () => Promise.resolve(data),
       text: () => Promise.resolve(JSON.stringify(data)),
       blob: () => Promise.resolve(new Blob([JSON.stringify(data)])),
-      arrayBuffer: () => Promise.resolve(Buffer.from(JSON.stringify(data))),
+      arrayBuffer: () => Promise.resolve(Buffer.from(JSON.stringify(data)))
     });
   };
 
@@ -401,12 +429,14 @@ describe('fetchTfLStatus', () => {
     fetch.mockImplementation(() => createResponse(allOkResponse));
     const result = await fetchTfLStatus(modes, showNames);
 
-    expect(fetch).toHaveBeenCalledWith(`https://api.tfl.gov.uk/Line/Mode/${modes}/Status`);
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.tfl.gov.uk/Line/Mode/${modes}/Status`
+    );
     expect(result).toEqual([
       {
         message: 'Good service on all lines',
-        bgColour: '#004A9C',
-      },
+        bgColour: '#004A9C'
+      }
     ]);
   });
 
@@ -417,7 +447,9 @@ describe('fetchTfLStatus', () => {
     fetch.mockImplementation(() => createResponse(singleDisruptionResponse));
     const result = await fetchTfLStatus(modes, showNames);
 
-    expect(fetch).toHaveBeenCalledWith(`https://api.tfl.gov.uk/Line/Mode/${modes}/Status`);
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.tfl.gov.uk/Line/Mode/${modes}/Status`
+    );
     expect(result).toEqual([
       {
         message: 'Waterloo & City',
@@ -425,8 +457,8 @@ describe('fetchTfLStatus', () => {
         striped: false
       },
       {
-        bgColour: "#004A9C",
-        message: "Good service on all other lines",
+        bgColour: '#004A9C',
+        message: 'Good service on all other lines'
       }
     ]);
   });
@@ -438,7 +470,9 @@ describe('fetchTfLStatus', () => {
     fetch.mockImplementation(() => createResponse(multipleDisruptionsResponse));
     const result = await fetchTfLStatus(modes, showNames);
 
-    expect(fetch).toHaveBeenCalledWith(`https://api.tfl.gov.uk/Line/Mode/${modes}/Status`);
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.tfl.gov.uk/Line/Mode/${modes}/Status`
+    );
     expect(result).toEqual([
       {
         message: 'Central',
@@ -461,9 +495,10 @@ describe('fetchTfLStatus', () => {
         striped: false
       },
       {
-        bgColour: "#004A9C",
-        message: "Good service on all other lines",
-      }]);
+        bgColour: '#004A9C',
+        message: 'Good service on all other lines'
+      }
+    ]);
   });
 
   test('should return status data with no disruption and showNames=false', async () => {
@@ -473,12 +508,14 @@ describe('fetchTfLStatus', () => {
     fetch.mockImplementation(() => createResponse(allOkResponse));
     const result = await fetchTfLStatus(modes, showNames);
 
-    expect(fetch).toHaveBeenCalledWith(`https://api.tfl.gov.uk/Line/Mode/${modes}/Status`);
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.tfl.gov.uk/Line/Mode/${modes}/Status`
+    );
     expect(result).toEqual([
       {
         message: 'Good service on all lines',
-        bgColour: '#004A9C',
-      },
+        bgColour: '#004A9C'
+      }
     ]);
   });
 
@@ -489,7 +526,9 @@ describe('fetchTfLStatus', () => {
     fetch.mockImplementation(() => createResponse(singleDisruptionResponse));
     const result = await fetchTfLStatus(modes, showNames);
 
-    expect(fetch).toHaveBeenCalledWith(`https://api.tfl.gov.uk/Line/Mode/${modes}/Status`);
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.tfl.gov.uk/Line/Mode/${modes}/Status`
+    );
     expect(result).toEqual([
       {
         message: '',
@@ -506,7 +545,9 @@ describe('fetchTfLStatus', () => {
     fetch.mockImplementation(() => createResponse(multipleDisruptionsResponse));
     const result = await fetchTfLStatus(modes, showNames);
 
-    expect(fetch).toHaveBeenCalledWith(`https://api.tfl.gov.uk/Line/Mode/${modes}/Status`);
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.tfl.gov.uk/Line/Mode/${modes}/Status`
+    );
     expect(result).toEqual([
       {
         message: '',
@@ -530,10 +571,7 @@ describe('fetchTfLStatus', () => {
       }
     ]);
   });
-
-
 });
-
 
 describe('isDevelopmentEnvironment', () => {
   const { isDevelopmentEnvironment } = require('./tflStatus');
@@ -641,7 +679,7 @@ describe('printUsageInstructions', () => {
 
   beforeAll(() => {
     // Mock console.log
-    consoleLogMock = jest.spyOn(console, 'log').mockImplementation(() => { });
+    consoleLogMock = jest.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   beforeEach(() => {
@@ -664,8 +702,14 @@ describe('printUsageInstructions', () => {
     tflStatus.printUsageInstructions();
 
     expect(consoleLogMock.mock.calls.length).toBeGreaterThanOrEqual(2);
-    expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Super simple TfL status');
-    expect(consoleLogMock).toHaveBeenNthCalledWith(2, 'from https://github.com/mnbf9rca/super_simple_tfl_status');
+    expect(consoleLogMock).toHaveBeenNthCalledWith(
+      1,
+      'Super simple TfL status'
+    );
+    expect(consoleLogMock).toHaveBeenNthCalledWith(
+      2,
+      'from https://github.com/mnbf9rca/super_simple_tfl_status'
+    );
 
     // Restore original NODE_ENV
     process.env.NODE_ENV = originalNodeEnv;
@@ -688,7 +732,10 @@ describe('printUsageInstructions', () => {
     tflStatus.printUsageInstructions();
 
     expect(consoleLogMock.mock.calls.length).toBeGreaterThanOrEqual(2);
-    expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Super simple TfL status');
+    expect(consoleLogMock).toHaveBeenNthCalledWith(
+      1,
+      'Super simple TfL status'
+    );
 
     // Restore original values
     process.env.NODE_ENV = originalNodeEnv;
@@ -712,7 +759,10 @@ describe('printUsageInstructions', () => {
     tflStatus.printUsageInstructions();
 
     expect(consoleLogMock.mock.calls.length).toBeGreaterThanOrEqual(2);
-    expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Super simple TfL status');
+    expect(consoleLogMock).toHaveBeenNthCalledWith(
+      1,
+      'Super simple TfL status'
+    );
 
     // Restore original values
     process.env.NODE_ENV = originalNodeEnv;
@@ -732,11 +782,10 @@ describe('printUsageInstructions', () => {
     const tflStatus = require('./tflStatus');
     tflStatus.printUsageInstructions();
 
-    expect(consoleLogMock.mock.calls.length).toBe(0);
+    expect(consoleLogMock.mock.calls).toHaveLength(0);
 
     // Restore original values
     process.env.NODE_ENV = originalNodeEnv;
     global.window = originalWindow;
   });
 });
-
