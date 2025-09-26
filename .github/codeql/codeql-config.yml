@@ -1,0 +1,15 @@
+name: "Super Simple TfL Status CodeQL Config"
+
+disable-default-queries: false
+
+queries:
+  - name: security-extended
+    uses: security-extended
+  - name: security-and-quality
+    uses: security-and-quality
+
+paths-ignore:
+  - node_modules/
+  - "**/*.test.js"
+  - "**/*.spec.js"
+  - coverage/
