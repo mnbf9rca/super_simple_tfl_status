@@ -545,17 +545,42 @@ describe('printUsageInstructions', () => {
     consoleLogMock = jest.spyOn(console, 'log').mockImplementation(() => { });
   });
 
+  beforeEach(() => {
+    // Clear mock calls between tests
+    consoleLogMock.mockClear();
+  });
+
   afterAll(() => {
     // Restore console.log to its original function
     consoleLogMock.mockRestore();
   });
 
-  it('should print some usage instructions', () => {
+  it('should print some usage instructions in development mode', () => {
+    // Set NODE_ENV to development to trigger console.log
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
     printUsageInstructions();
 
     expect(consoleLogMock.mock.calls.length).toBeGreaterThanOrEqual(2);
     expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Super simple TfL status');
     expect(consoleLogMock).toHaveBeenNthCalledWith(2, 'from https://github.com/mnbf9rca/super_simple_tfl_status');
+
+    // Restore original NODE_ENV
+    process.env.NODE_ENV = originalNodeEnv;
+  });
+
+  it('should not print usage instructions in non-development mode', () => {
+    // Ensure NODE_ENV is not development
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'test';
+
+    printUsageInstructions();
+
+    expect(consoleLogMock.mock.calls.length).toBe(0);
+
+    // Restore original NODE_ENV
+    process.env.NODE_ENV = originalNodeEnv;
   });
 });
 
