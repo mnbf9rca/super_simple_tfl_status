@@ -6,6 +6,7 @@
 [![Sourcery](https://img.shields.io/badge/Sourcery-enabled-brightgreen)](https://sourcery.ai)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-24.x-brightgreen)](https://nodejs.org/)
+[![Security Policy](https://img.shields.io/badge/Security-Policy-blue)](SECURITY.md)
 
 ## Overview
 
