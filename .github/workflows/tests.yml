@@ -5,6 +5,10 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
 
+# Restrict permissions for GITHUB_TOKEN following security best practices
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Test Node ${{ matrix.node-version }}

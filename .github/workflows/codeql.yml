@@ -8,6 +8,10 @@ on:
   schedule:
     - cron: '0 6 * * 1' # Weekly on Mondays at 6 AM UTC
 
+# Default permissions (overridden by job-level permissions below)
+permissions:
+  contents: read
+
 jobs:
   analyze:
     name: Analyze JavaScript
