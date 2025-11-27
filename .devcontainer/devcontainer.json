@@ -1,5 +1,5 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:24@sha256:fd373e0409247e4ba0b03bcbe97419437caeaa71a8ccd835836a94a4a36820fb",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24@sha256:88852e0399a174d8af051bafe1a44971a08351f4255d585d7b32c68b8ab35e79",
   "customizations": {
     "vscode": {
       "extensions": ["Orta.vscode-jest"]
